@@ -81,7 +81,10 @@ export function LeadDrawer({
       if (k === "id" || k === "created_at" || k === "updated_at") continue;
       if ((lead as Record<string, unknown>)[k] !== v) patch[k] = v === "" ? null : v;
     }
-    if (Object.keys(patch).length === 0) return toast("No changes to save");
+    if (Object.keys(patch).length === 0) {
+      toast("No changes to save");
+      return;
+    }
     update.mutate(
       { id: lead.id, patch },
       { onSuccess: () => toast.success("Lead saved"), onError: (e) => toast.error(String(e)) },

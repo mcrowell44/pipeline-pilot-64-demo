@@ -3,6 +3,41 @@ import type { Database } from "@/integrations/supabase/types";
 export type Lead = Database["public"]["Tables"]["leads"]["Row"];
 export type LeadUpdate = Database["public"]["Tables"]["leads"]["Update"];
 export type Draft = Database["public"]["Tables"]["outreach_drafts"]["Row"];
+export type Activity = Database["public"]["Tables"]["lead_activity"]["Row"];
+
+export const ACTIVITY_KINDS = ["Email Sent", "Reply", "Call", "Meeting", "Note"] as const;
+export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
+
+/**
+ * A lead needs attention when its next step is due today or earlier, or when it
+ * has been sitting in Contacted for more than 7 days with no Reply logged.
+ */
+export function needsAttention(lead: Lead, activity: Activity[]): boolean {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (lead.next_step_due) {
+    const due = new Date(`${lead.next_step_due}T00:00:00`);
+    if (!Number.isNaN(due.getTime()) && due.getTime() <= today.getTime()) return true;
+  }
+
+  if (lead.stage === "Contacted") {
+    const since = lead.last_touch_at ?? lead.updated_at;
+    const stale = new Date(since).getTime() < Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const replied = activity.some((a) => a.lead_id === lead.id && a.kind === "Reply");
+    if (stale && !replied) return true;
+  }
+
+  return false;
+}
+
+export function fmtDateTime(value: string | null) {
+  if (!value) return "—";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
+}
+
 
 export const STAGES = [
   "New",

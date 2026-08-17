@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import type { Draft, Lead, LeadUpdate } from "@/lib/crm";
+import { sendOutreach } from "@/lib/outreach.functions";
+import type { Activity, ActivityKind, Draft, Lead, LeadUpdate } from "@/lib/crm";
 import { buildDraft, withCanonicalBlocks } from "@/lib/outreach";
 
 export function useLeads() {
@@ -86,5 +88,70 @@ export function useGenerateMissingDrafts() {
       return rows.length;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["drafts"] }),
+  });
+}
+
+export function useActivity() {
+  return useQuery({
+    queryKey: ["activity"],
+    queryFn: async (): Promise<Activity[]> => {
+      const { data, error } = await supabase
+        .from("lead_activity")
+        .select("*")
+        .order("occurred_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useLogActivity() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      lead_id,
+      kind,
+      body,
+    }: {
+      lead_id: string;
+      kind: ActivityKind;
+      body: string;
+    }) => {
+      const occurred_at = new Date().toISOString();
+      const { error } = await supabase
+        .from("lead_activity")
+        .insert({ lead_id, kind, body, occurred_at });
+      if (error) throw error;
+      const { error: touchError } = await supabase
+        .from("leads")
+        .update({ last_touch_at: occurred_at })
+        .eq("id", lead_id);
+      if (touchError) throw touchError;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["activity"] });
+      qc.invalidateQueries({ queryKey: ["leads"] });
+    },
+  });
+}
+
+/**
+ * Sends a single draft. Only wired to the Send confirm dialog — never called on
+ * mount, on a timer, or over a list.
+ */
+export function useSendOutreach() {
+  const qc = useQueryClient();
+  const send = useServerFn(sendOutreach);
+  return useMutation({
+    mutationFn: async (draftId: string) => {
+      const result = await send({ data: { draftId } });
+      if (!result.ok) throw new Error(result.error ?? "Send failed.");
+      return result;
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ["drafts"] });
+      qc.invalidateQueries({ queryKey: ["leads"] });
+      qc.invalidateQueries({ queryKey: ["activity"] });
+    },
   });
 }

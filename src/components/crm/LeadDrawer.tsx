@@ -16,14 +16,17 @@ import {
   PLAYS,
   PRIORITIES,
   STAGES,
+  ACTIVITY_KINDS,
   brandClass,
   fmtDate,
   priorityClass,
   statusClass,
+  fmtDateTime,
+  type ActivityKind,
   type Draft,
   type Lead,
 } from "@/lib/crm";
-import { useUpdateLead } from "@/hooks/useCrm";
+import { useActivity, useLogActivity, useUpdateLead } from "@/hooks/useCrm";
 import { toast } from "sonner";
 
 const TEXT_FIELDS: Array<[keyof Lead, string]> = [

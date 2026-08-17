@@ -167,6 +167,18 @@ export function LeadDrawer({
                 onChange={(e) => set("scan_date", e.target.value)}
               />
             </label>
+            <label className="space-y-1">
+              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                Next step due
+              </span>
+              <Input
+                type="date"
+                className="h-7 text-xs"
+                value={(form["next_step_due"] as string) ?? ""}
+                onChange={(e) => set("next_step_due", e.target.value)}
+              />
+            </label>
+
           </section>
 
           <section className="grid grid-cols-2 gap-2">

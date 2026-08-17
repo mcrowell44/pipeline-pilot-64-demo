@@ -91,24 +91,24 @@ export function LeadDrawer({
     );
   };
 
-  const addNote = () => {
+  const addActivity = () => {
     if (!note.trim()) return;
-    const stamp = new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
-    const entry = `[${stamp}] ${note.trim()}`;
-    const next = lead.notes ? `${entry}\n${lead.notes}` : entry;
-    update.mutate(
-      { id: lead.id, patch: { notes: next, last_touch_at: new Date().toISOString() } },
+    log.mutate(
+      { lead_id: lead.id, kind, body: note.trim() },
       {
         onSuccess: () => {
           setNote("");
-          setForm((f) => ({ ...f, notes: next }));
-          toast.success("Note added");
+          toast.success("Activity logged");
         },
+        onError: (e) => toast.error(String(e)),
       },
     );
   };
 
-  const timeline = (lead.notes ?? "").split("\n").filter(Boolean);
+  const timeline = (activity ?? [])
+    .filter((a) => a.lead_id === lead.id)
+    .sort((a, b) => b.occurred_at.localeCompare(a.occurred_at));
+
 
   return (
     <Sheet open={!!lead} onOpenChange={(o) => !o && onClose()}>

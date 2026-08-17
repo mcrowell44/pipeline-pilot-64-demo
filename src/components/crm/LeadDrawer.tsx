@@ -63,13 +63,18 @@ export function LeadDrawer({
   onClose: () => void;
 }) {
   const update = useUpdateLead();
+  const { data: activity } = useActivity();
+  const log = useLogActivity();
   const [form, setForm] = useState<Record<string, unknown>>({});
   const [note, setNote] = useState("");
+  const [kind, setKind] = useState<ActivityKind>("Note");
 
   useEffect(() => {
     setForm(lead ? { ...lead } : {});
     setNote("");
+    setKind("Note");
   }, [lead]);
+
 
   if (!lead) return null;
 

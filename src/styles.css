@@ -141,7 +141,13 @@
 }
 
 @layer components {
-  .badge-base {
+  .badge-zapai,
+  .badge-newton,
+  .chip-high,
+  .chip-medium,
+  .chip-low,
+  .chip-approved,
+  .chip-sent {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
@@ -151,49 +157,42 @@
     font-weight: 600;
     letter-spacing: 0.03em;
     text-transform: uppercase;
-    line-height: 1.5rem;
+    line-height: 1.125rem;
     height: 1.125rem;
     white-space: nowrap;
   }
 
   .badge-zapai {
-    @apply badge-base;
     background: var(--zapai-soft);
     color: var(--zapai);
   }
 
   .badge-newton {
-    @apply badge-base;
     background: var(--newton-soft);
     color: var(--newton);
   }
 
   .chip-high {
-    @apply badge-base;
     background: var(--pri-high-soft);
     color: var(--pri-high);
   }
 
   .chip-medium {
-    @apply badge-base;
     background: var(--pri-medium-soft);
     color: var(--pri-medium);
   }
 
   .chip-low {
-    @apply badge-base;
     background: var(--pri-low-soft);
     color: var(--pri-low);
   }
 
   .chip-approved {
-    @apply badge-base;
     background: var(--zapai-soft);
     color: var(--zapai);
   }
 
   .chip-sent {
-    @apply badge-base;
     background: var(--ok-soft);
     color: var(--ok);
   }

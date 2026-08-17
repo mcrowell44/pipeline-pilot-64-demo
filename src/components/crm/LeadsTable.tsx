@@ -17,9 +17,10 @@ import {
   brandClass,
   fmtDate,
   priorityClass,
+  needsAttention,
   type Lead,
 } from "@/lib/crm";
-import { useUpdateLead, useUpdateLeads } from "@/hooks/useCrm";
+import { useActivity, useUpdateLead, useUpdateLeads } from "@/hooks/useCrm";
 import { toast } from "sonner";
 
 type SortKey = "company" | "brand" | "play" | "priority" | "stage" | "geo" | "scan_date";
@@ -37,6 +38,7 @@ const COLUMNS: Array<{ key: SortKey | null; label: string; className?: string }>
   { key: null, label: "Pay" },
   { key: "geo", label: "Geo" },
   { key: null, label: "Next step" },
+  { key: null, label: "Due" },
   { key: "scan_date", label: "Scan" },
   { key: null, label: "Touch" },
 ];
@@ -53,6 +55,8 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
   const [scanDate, setScanDate] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "company", dir: 1 });
   const [selected, setSelected] = useState<string[]>([]);
+  const [attention, setAttention] = useState(false);
+  const { data: activity } = useActivity();
 
   const rows = useMemo(() => {
     const filtered = leads.filter((l) => {
@@ -62,6 +66,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
       if (stage !== ANY && l.stage !== stage) return false;
       if (geo && !(l.geo ?? "").toLowerCase().includes(geo.toLowerCase())) return false;
       if (scanDate && l.scan_date !== scanDate) return false;
+      if (attention && !needsAttention(l, activity ?? [])) return false;
       if (q) {
         const hay = [l.company, l.contact_name, l.email, l.role_title, l.tech, l.city]
           .join(" ")
@@ -75,7 +80,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
       const bv = (b[sort.key] ?? "") as string;
       return av.localeCompare(bv) * sort.dir;
     });
-  }, [leads, brand, play, priority, stage, geo, scanDate, q, sort]);
+  }, [leads, brand, play, priority, stage, geo, scanDate, q, sort, attention, activity]);
 
   const allSelected = rows.length > 0 && rows.every((r) => selected.includes(r.id));
 
@@ -120,6 +125,20 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
           onChange={(e) => setScanDate(e.target.value)}
           className="h-7 w-36 text-xs"
         />
+        <button
+          onClick={() => setAttention((a) => !a)}
+          title="Next step due today or earlier, or sitting in Contacted 7+ days with no reply"
+          className={`h-7 rounded border px-2 text-[11px] ${
+            attention
+              ? "border-transparent bg-destructive text-destructive-foreground"
+              : "border-border text-muted-foreground hover:bg-surface-2"
+          }`}
+        >
+          Needs attention
+          <span className="ml-1 opacity-70">
+            {leads.filter((l) => needsAttention(l, activity ?? [])).length}
+          </span>
+        </button>
         <span className="ml-auto text-[11px] text-muted-foreground">{rows.length} leads</span>
       </div>
 
@@ -227,6 +246,19 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
                 <EditableCell lead={lead} field="pay_range" onSave={saveCell} />
                 <EditableCell lead={lead} field="geo" onSave={saveCell} />
                 <EditableCell lead={lead} field="next_step" onSave={saveCell} />
+                <td className="whitespace-nowrap px-2 py-1">
+                  <input
+                    type="date"
+                    className="cell-input"
+                    defaultValue={(lead.next_step_due as string) ?? ""}
+                    onChange={(e) =>
+                      update.mutate({
+                        id: lead.id,
+                        patch: { next_step_due: e.target.value || null },
+                      })
+                    }
+                  />
+                </td>
                 <td className="whitespace-nowrap px-2 py-1 text-muted-foreground">
                   {fmtDate(lead.scan_date)}
                 </td>
@@ -237,7 +269,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={13} className="px-2 py-8 text-center text-muted-foreground">
+                <td colSpan={14} className="px-2 py-8 text-center text-muted-foreground">
                   No leads match these filters.
                 </td>
               </tr>

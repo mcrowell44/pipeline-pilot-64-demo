@@ -16,14 +16,17 @@ import {
   PLAYS,
   PRIORITIES,
   STAGES,
+  ACTIVITY_KINDS,
   brandClass,
   fmtDate,
   priorityClass,
   statusClass,
+  fmtDateTime,
+  type ActivityKind,
   type Draft,
   type Lead,
 } from "@/lib/crm";
-import { useUpdateLead } from "@/hooks/useCrm";
+import { useActivity, useLogActivity, useUpdateLead } from "@/hooks/useCrm";
 import { toast } from "sonner";
 
 const TEXT_FIELDS: Array<[keyof Lead, string]> = [
@@ -63,13 +66,18 @@ export function LeadDrawer({
   onClose: () => void;
 }) {
   const update = useUpdateLead();
+  const { data: activity } = useActivity();
+  const log = useLogActivity();
   const [form, setForm] = useState<Record<string, unknown>>({});
   const [note, setNote] = useState("");
+  const [kind, setKind] = useState<ActivityKind>("Note");
 
   useEffect(() => {
     setForm(lead ? { ...lead } : {});
     setNote("");
+    setKind("Note");
   }, [lead]);
+
 
   if (!lead) return null;
 
@@ -91,24 +99,24 @@ export function LeadDrawer({
     );
   };
 
-  const addNote = () => {
+  const addActivity = () => {
     if (!note.trim()) return;
-    const stamp = new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
-    const entry = `[${stamp}] ${note.trim()}`;
-    const next = lead.notes ? `${entry}\n${lead.notes}` : entry;
-    update.mutate(
-      { id: lead.id, patch: { notes: next, last_touch_at: new Date().toISOString() } },
+    log.mutate(
+      { lead_id: lead.id, kind, body: note.trim() },
       {
         onSuccess: () => {
           setNote("");
-          setForm((f) => ({ ...f, notes: next }));
-          toast.success("Note added");
+          toast.success("Activity logged");
         },
+        onError: (e) => toast.error(String(e)),
       },
     );
   };
 
-  const timeline = (lead.notes ?? "").split("\n").filter(Boolean);
+  const timeline = (activity ?? [])
+    .filter((a) => a.lead_id === lead.id)
+    .sort((a, b) => b.occurred_at.localeCompare(a.occurred_at));
+
 
   return (
     <Sheet open={!!lead} onOpenChange={(o) => !o && onClose()}>
@@ -159,6 +167,18 @@ export function LeadDrawer({
                 onChange={(e) => set("scan_date", e.target.value)}
               />
             </label>
+            <label className="space-y-1">
+              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                Next step due
+              </span>
+              <Input
+                type="date"
+                className="h-7 text-xs"
+                value={(form["next_step_due"] as string) ?? ""}
+                onChange={(e) => set("next_step_due", e.target.value)}
+              />
+            </label>
+
           </section>
 
           <section className="grid grid-cols-2 gap-2">
@@ -219,31 +239,53 @@ export function LeadDrawer({
 
           <section className="panel p-3">
             <h3 className="mb-2 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Notes timeline
+              Activity
             </h3>
             <div className="flex gap-2">
+              <Select value={kind} onValueChange={(v) => setKind(v as ActivityKind)}>
+                <SelectTrigger className="h-7 w-[124px] shrink-0 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ACTIVITY_KINDS.map((k) => (
+                    <SelectItem key={k} value={k} className="text-xs">
+                      {k}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Log a call, reply, or next step…"
+                placeholder="Log a call, reply, meeting, or note…"
                 className="min-h-[52px] text-xs"
               />
-              <Button size="sm" className="h-7 text-xs" onClick={addNote}>
-                Add
+              <Button
+                size="sm"
+                className="h-7 text-xs"
+                onClick={addActivity}
+                disabled={log.isPending}
+              >
+                Log
               </Button>
             </div>
             <ul className="mt-3 space-y-2 border-l border-border pl-3">
               {timeline.length === 0 && (
                 <li className="text-xs text-muted-foreground">No activity logged.</li>
               )}
-              {timeline.map((entry, i) => (
-                <li key={i} className="relative text-xs leading-relaxed">
+              {timeline.map((entry) => (
+                <li key={entry.id} className="relative text-xs leading-relaxed">
                   <span className="absolute -left-[15px] top-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-                  {entry}
+                  <span className="font-medium">{entry.kind}</span>
+                  <span className="ml-1 text-muted-foreground">
+                    {fmtDateTime(entry.occurred_at)}
+                  </span>
+                  {entry.body && <div className="text-foreground">{entry.body}</div>}
                 </li>
               ))}
             </ul>
           </section>
+
         </div>
       </SheetContent>
     </Sheet>

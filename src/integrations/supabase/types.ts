@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      lead_activity: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["activity_kind"]
+          lead_id: string
+          occurred_at: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["activity_kind"]
+          lead_id: string
+          occurred_at?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["activity_kind"]
+          lead_id?: string
+          occurred_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_activity_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           brand: Database["public"]["Enums"]["brand"]
@@ -29,6 +67,7 @@ export type Database = {
           last_touch_at: string | null
           lead_type: Database["public"]["Enums"]["lead_type"] | null
           next_step: string | null
+          next_step_due: string | null
           notes: string | null
           pay_range: string | null
           phone: string | null
@@ -58,6 +97,7 @@ export type Database = {
           last_touch_at?: string | null
           lead_type?: Database["public"]["Enums"]["lead_type"] | null
           next_step?: string | null
+          next_step_due?: string | null
           notes?: string | null
           pay_range?: string | null
           phone?: string | null
@@ -87,6 +127,7 @@ export type Database = {
           last_touch_at?: string | null
           lead_type?: Database["public"]["Enums"]["lead_type"] | null
           next_step?: string | null
+          next_step_due?: string | null
           notes?: string | null
           pay_range?: string | null
           phone?: string | null
@@ -156,6 +197,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      activity_kind: "Email Sent" | "Reply" | "Call" | "Meeting" | "Note"
       brand: "ZapAI" | "Newton Health"
       draft_status: "Draft" | "Approved" | "Sent" | "Bounced"
       lead_type: "Employer" | "Recruiter"
@@ -298,6 +340,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      activity_kind: ["Email Sent", "Reply", "Call", "Meeting", "Note"],
       brand: ["ZapAI", "Newton Health"],
       draft_status: ["Draft", "Approved", "Sent", "Bounced"],
       lead_type: ["Employer", "Recruiter"],

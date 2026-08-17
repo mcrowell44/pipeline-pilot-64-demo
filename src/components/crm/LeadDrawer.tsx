@@ -227,31 +227,53 @@ export function LeadDrawer({
 
           <section className="panel p-3">
             <h3 className="mb-2 text-[10px] uppercase tracking-wide text-muted-foreground">
-              Notes timeline
+              Activity
             </h3>
             <div className="flex gap-2">
+              <Select value={kind} onValueChange={(v) => setKind(v as ActivityKind)}>
+                <SelectTrigger className="h-7 w-[124px] shrink-0 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ACTIVITY_KINDS.map((k) => (
+                    <SelectItem key={k} value={k} className="text-xs">
+                      {k}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Log a call, reply, or next step…"
+                placeholder="Log a call, reply, meeting, or note…"
                 className="min-h-[52px] text-xs"
               />
-              <Button size="sm" className="h-7 text-xs" onClick={addNote}>
-                Add
+              <Button
+                size="sm"
+                className="h-7 text-xs"
+                onClick={addActivity}
+                disabled={log.isPending}
+              >
+                Log
               </Button>
             </div>
             <ul className="mt-3 space-y-2 border-l border-border pl-3">
               {timeline.length === 0 && (
                 <li className="text-xs text-muted-foreground">No activity logged.</li>
               )}
-              {timeline.map((entry, i) => (
-                <li key={i} className="relative text-xs leading-relaxed">
+              {timeline.map((entry) => (
+                <li key={entry.id} className="relative text-xs leading-relaxed">
                   <span className="absolute -left-[15px] top-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-                  {entry}
+                  <span className="font-medium">{entry.kind}</span>
+                  <span className="ml-1 text-muted-foreground">
+                    {fmtDateTime(entry.occurred_at)}
+                  </span>
+                  {entry.body && <div className="text-foreground">{entry.body}</div>}
                 </li>
               ))}
             </ul>
           </section>
+
         </div>
       </SheetContent>
     </Sheet>

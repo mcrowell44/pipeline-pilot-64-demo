@@ -14,7 +14,140 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      leads: {
+        Row: {
+          brand: Database["public"]["Enums"]["brand"]
+          city: string | null
+          company: string
+          contact_name: string | null
+          country: string
+          created_at: string
+          email: string | null
+          geo: string | null
+          ghl_contact_id: string | null
+          id: string
+          last_touch_at: string | null
+          lead_type: Database["public"]["Enums"]["lead_type"] | null
+          next_step: string | null
+          notes: string | null
+          pay_range: string | null
+          phone: string | null
+          play: Database["public"]["Enums"]["play"]
+          priority: Database["public"]["Enums"]["priority"]
+          role_title: string | null
+          scan_date: string | null
+          scan_source: string | null
+          stage: Database["public"]["Enums"]["stage"]
+          state: string | null
+          tech: string | null
+          updated_at: string
+          website: string | null
+          zip: string | null
+        }
+        Insert: {
+          brand?: Database["public"]["Enums"]["brand"]
+          city?: string | null
+          company: string
+          contact_name?: string | null
+          country?: string
+          created_at?: string
+          email?: string | null
+          geo?: string | null
+          ghl_contact_id?: string | null
+          id?: string
+          last_touch_at?: string | null
+          lead_type?: Database["public"]["Enums"]["lead_type"] | null
+          next_step?: string | null
+          notes?: string | null
+          pay_range?: string | null
+          phone?: string | null
+          play?: Database["public"]["Enums"]["play"]
+          priority?: Database["public"]["Enums"]["priority"]
+          role_title?: string | null
+          scan_date?: string | null
+          scan_source?: string | null
+          stage?: Database["public"]["Enums"]["stage"]
+          state?: string | null
+          tech?: string | null
+          updated_at?: string
+          website?: string | null
+          zip?: string | null
+        }
+        Update: {
+          brand?: Database["public"]["Enums"]["brand"]
+          city?: string | null
+          company?: string
+          contact_name?: string | null
+          country?: string
+          created_at?: string
+          email?: string | null
+          geo?: string | null
+          ghl_contact_id?: string | null
+          id?: string
+          last_touch_at?: string | null
+          lead_type?: Database["public"]["Enums"]["lead_type"] | null
+          next_step?: string | null
+          notes?: string | null
+          pay_range?: string | null
+          phone?: string | null
+          play?: Database["public"]["Enums"]["play"]
+          priority?: Database["public"]["Enums"]["priority"]
+          role_title?: string | null
+          scan_date?: string | null
+          scan_source?: string | null
+          stage?: Database["public"]["Enums"]["stage"]
+          state?: string | null
+          tech?: string | null
+          updated_at?: string
+          website?: string | null
+          zip?: string | null
+        }
+        Relationships: []
+      }
+      outreach_drafts: {
+        Row: {
+          body_html: string
+          created_at: string
+          id: string
+          lead_id: string
+          preview_text: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["draft_status"]
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          body_html?: string
+          created_at?: string
+          id?: string
+          lead_id: string
+          preview_text?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["draft_status"]
+          subject?: string
+          updated_at?: string
+        }
+        Update: {
+          body_html?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+          preview_text?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["draft_status"]
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outreach_drafts_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +156,21 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      brand: "ZapAI" | "Newton Health"
+      draft_status: "Draft" | "Approved" | "Sent" | "Bounced"
+      lead_type: "Employer" | "Recruiter"
+      play: "Apply" | "Subcontract" | "Both"
+      priority: "High" | "Medium" | "Low"
+      stage:
+        | "New"
+        | "Contacted"
+        | "Replied"
+        | "Discovery Booked"
+        | "Meeting Held"
+        | "Proposal Sent"
+        | "Won"
+        | "Lost"
+        | "Needs Contact Info"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +297,23 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      brand: ["ZapAI", "Newton Health"],
+      draft_status: ["Draft", "Approved", "Sent", "Bounced"],
+      lead_type: ["Employer", "Recruiter"],
+      play: ["Apply", "Subcontract", "Both"],
+      priority: ["High", "Medium", "Low"],
+      stage: [
+        "New",
+        "Contacted",
+        "Replied",
+        "Discovery Booked",
+        "Meeting Held",
+        "Proposal Sent",
+        "Won",
+        "Lost",
+        "Needs Contact Info",
+      ],
+    },
   },
 } as const

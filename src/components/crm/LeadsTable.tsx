@@ -130,7 +130,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
           title="Next step due today or earlier, or sitting in Contacted 7+ days with no reply"
           className={`h-7 rounded border px-2 text-[11px] ${
             attention
-              ? "border-transparent bg-priority-high text-white"
+              ? "border-transparent bg-destructive text-destructive-foreground"
               : "border-border text-muted-foreground hover:bg-surface-2"
           }`}
         >

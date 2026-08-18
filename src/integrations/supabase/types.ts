@@ -155,10 +155,13 @@ export type Database = {
         Row: {
           body_html: string
           created_at: string
+          from_address: string | null
           id: string
           lead_id: string
           owner_id: string | null
           preview_text: string | null
+          provider: string | null
+          provider_message_id: string | null
           sent_at: string | null
           status: Database["public"]["Enums"]["draft_status"]
           subject: string
@@ -167,10 +170,13 @@ export type Database = {
         Insert: {
           body_html?: string
           created_at?: string
+          from_address?: string | null
           id?: string
           lead_id: string
           owner_id?: string | null
           preview_text?: string | null
+          provider?: string | null
+          provider_message_id?: string | null
           sent_at?: string | null
           status?: Database["public"]["Enums"]["draft_status"]
           subject?: string
@@ -179,10 +185,13 @@ export type Database = {
         Update: {
           body_html?: string
           created_at?: string
+          from_address?: string | null
           id?: string
           lead_id?: string
           owner_id?: string | null
           preview_text?: string | null
+          provider?: string | null
+          provider_message_id?: string | null
           sent_at?: string | null
           status?: Database["public"]["Enums"]["draft_status"]
           subject?: string

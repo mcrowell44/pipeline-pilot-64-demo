@@ -45,13 +45,16 @@ export function SendDialog({
                 </div>
                 <div>
                   <span className="text-muted-foreground">From: </span>
-                  <span className="text-foreground">Marcus Crowell &lt;marcus@zapai.io&gt;</span>
+                  <span className="text-foreground">
+                    Marcus Crowell &lt;marcus@cdmweb.store&gt;
+                  </span>
                 </div>
               </div>
               <p className="text-muted-foreground">
-                This delivers the draft immediately, marks it Sent, moves {lead?.company} to
-                Contacted, and logs an Email Sent activity.
+                Sends through GoHighLevel, marks the draft Sent, moves {lead?.company} to Contacted,
+                and logs an Email Sent activity. Replies land in your GHL inbox.
               </p>
+
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>

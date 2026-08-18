@@ -82,7 +82,9 @@ export function useGenerateMissingDrafts() {
       const covered = new Set(drafts.map((d) => d.lead_id));
       const targets = leads.filter((l) => !covered.has(l.id));
       if (targets.length === 0) return 0;
-      const rows = targets.map((lead) => ({ lead_id: lead.id, ...buildDraft(lead) }));
+      const { data: auth } = await supabase.auth.getUser();
+      const owner_id = auth.user?.id ?? null;
+      const rows = targets.map((lead) => ({ lead_id: lead.id, owner_id, ...buildDraft(lead) }));
       const { error } = await supabase.from("outreach_drafts").insert(rows);
       if (error) throw error;
       return rows.length;
@@ -118,9 +120,10 @@ export function useLogActivity() {
       body: string;
     }) => {
       const occurred_at = new Date().toISOString();
+      const { data: auth } = await supabase.auth.getUser();
       const { error } = await supabase
         .from("lead_activity")
-        .insert({ lead_id, kind, body, occurred_at });
+        .insert({ lead_id, kind, body, occurred_at, owner_id: auth.user?.id ?? null });
       if (error) throw error;
       const { error: touchError } = await supabase
         .from("leads")

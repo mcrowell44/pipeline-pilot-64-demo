@@ -1,12 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { ResendError, sendEmail } from "./resend.server";
+import { FROM_ADDRESS, GhlError, sendEmail, upsertContact } from "./ghl.server";
 
 type Client = SupabaseClient<Database>;
 
 export type SendResult = {
   ok: boolean;
   messageId?: string | null;
+  conversationId?: string | null;
   error?: string;
   status?: "Sent" | "Bounced";
 };
@@ -16,7 +17,6 @@ export async function runSendOutreach(
   ownerId: string,
   draftId: string,
 ): Promise<SendResult> {
-
   const { data: draft, error: draftError } = await sb
     .from("outreach_drafts")
     .select("*")
@@ -40,30 +40,46 @@ export async function runSendOutreach(
   }
 
   try {
-    const { id } = await sendEmail({
-      to: lead.email,
+    const contactId = await upsertContact({
+      email: lead.email,
+      name: lead.contact_name,
+      company: lead.company,
+      phone: lead.phone,
+    });
+
+    const { messageId, conversationId } = await sendEmail({
+      contactId,
       subject: draft.subject,
       html: draft.body_html,
     });
 
     const now = new Date().toISOString();
-    await sb.from("outreach_drafts").update({ status: "Sent", sent_at: now }).eq("id", draft.id);
+    await sb
+      .from("outreach_drafts")
+      .update({
+        status: "Sent",
+        sent_at: now,
+        provider: "gohighlevel",
+        provider_message_id: messageId,
+        from_address: FROM_ADDRESS,
+      })
+      .eq("id", draft.id);
     await sb
       .from("leads")
-      .update({ stage: "Contacted", last_touch_at: now })
+      .update({ stage: "Contacted", last_touch_at: now, ghl_contact_id: contactId })
       .eq("id", lead.id);
     await sb.from("lead_activity").insert({
       lead_id: lead.id,
       kind: "Email Sent",
       owner_id: ownerId,
       occurred_at: now,
-      body: `Sent "${draft.subject}" to ${lead.email}`,
+      body: `Sent "${draft.subject}" to ${lead.email} from ${FROM_ADDRESS}`,
     });
 
-    return { ok: true, messageId: id, status: "Sent" };
+    return { ok: true, messageId, conversationId, status: "Sent" };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    const hard = err instanceof ResendError && err.hard;
+    const hard = err instanceof GhlError && err.hard;
     if (hard) {
       await sb.from("outreach_drafts").update({ status: "Bounced" }).eq("id", draft.id);
       await sb.from("lead_activity").insert({

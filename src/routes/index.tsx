@@ -28,7 +28,7 @@ function PipelinePage() {
     <CrmShell>
       {({ leads, open }) => (
         <>
-          <h1 className="sr-only">Lead pipeline board</h1>
+          <h1 className="px-3 pt-2 text-[13px] font-semibold tracking-tight text-foreground">Lead pipeline board</h1>
           <PipelineBoard leads={leads} onOpen={open} />
         </>
       )}

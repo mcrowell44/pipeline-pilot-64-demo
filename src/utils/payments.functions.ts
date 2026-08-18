@@ -61,7 +61,7 @@ export const createSubscriptionCheckout = createServerFn({ method: "POST" })
       if (!stripePrice) throw new Error("Price not found");
 
       const customerId = await resolveOrCreateCustomer(stripe, {
-        email: user?.email ?? undefined,
+        ...(user?.email ? { email: user.email } : {}),
         userId,
       });
 

@@ -27,6 +27,7 @@ export function CrmShell({
   return (
     <div className="flex h-screen flex-col bg-background">
       <header className="flex items-center gap-3 border-b border-border bg-surface px-3 py-2">
+        <img src="/favicon.png" alt="Claude Pipe" className="h-5 w-5 rounded-sm" />
         <span className="text-sm font-semibold tracking-tight">Claude CRM</span>
         <nav className="flex items-center gap-1">
           {NAV.map((item) => (

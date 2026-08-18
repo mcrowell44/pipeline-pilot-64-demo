@@ -28,7 +28,7 @@ function LeadsPage() {
     <CrmShell>
       {({ leads, open }) => (
         <>
-          <h1 className="sr-only">Leads table</h1>
+          <h1 className="px-3 pt-2 text-[13px] font-semibold tracking-tight text-foreground">Leads table</h1>
           <LeadsTable leads={leads} onOpen={open} />
         </>
       )}

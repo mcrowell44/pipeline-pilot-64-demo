@@ -28,7 +28,7 @@ function OutreachPage() {
     <CrmShell>
       {({ leads, drafts }) => (
         <>
-          <h1 className="sr-only">Outreach drafts</h1>
+          <h1 className="px-3 pt-2 text-[13px] font-semibold tracking-tight text-foreground">Outreach drafts</h1>
           <OutreachList drafts={drafts} leads={leads} />
         </>
       )}

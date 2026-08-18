@@ -1,14 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { ResendError, sendEmail } from "./resend.server";
 
-function serverClient() {
-  return createClient<Database>(
-    process.env["SUPABASE_URL"]!,
-    process.env["SUPABASE_PUBLISHABLE_KEY"]!,
-    { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-  );
-}
+type Client = SupabaseClient<Database>;
 
 export type SendResult = {
   ok: boolean;
@@ -17,8 +11,11 @@ export type SendResult = {
   status?: "Sent" | "Bounced";
 };
 
-export async function runSendOutreach(draftId: string): Promise<SendResult> {
-  const sb = serverClient();
+export async function runSendOutreach(
+  sb: Client,
+  ownerId: string,
+  draftId: string,
+): Promise<SendResult> {
 
   const { data: draft, error: draftError } = await sb
     .from("outreach_drafts")
@@ -58,6 +55,7 @@ export async function runSendOutreach(draftId: string): Promise<SendResult> {
     await sb.from("lead_activity").insert({
       lead_id: lead.id,
       kind: "Email Sent",
+      owner_id: ownerId,
       occurred_at: now,
       body: `Sent "${draft.subject}" to ${lead.email}`,
     });
@@ -71,6 +69,7 @@ export async function runSendOutreach(draftId: string): Promise<SendResult> {
       await sb.from("lead_activity").insert({
         lead_id: lead.id,
         kind: "Note",
+        owner_id: ownerId,
         body: `Send failed (marked Bounced): ${message}`,
       });
     }

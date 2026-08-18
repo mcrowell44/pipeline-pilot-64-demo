@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const sendSchema = z.object({ draftId: z.string().uuid() });
 
@@ -8,8 +9,9 @@ const sendSchema = z.object({ draftId: z.string().uuid() });
  * there is no schedule, no batch path, and no send-on-load anywhere.
  */
 export const sendOutreach = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => sendSchema.parse(data))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { runSendOutreach } = await import("./send-outreach.server");
-    return runSendOutreach(data.draftId);
+    return runSendOutreach(context.supabase, context.userId, data.draftId);
   });

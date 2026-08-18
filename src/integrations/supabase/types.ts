@@ -22,6 +22,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["activity_kind"]
           lead_id: string
           occurred_at: string
+          owner_id: string | null
           updated_at: string
         }
         Insert: {
@@ -31,6 +32,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["activity_kind"]
           lead_id: string
           occurred_at?: string
+          owner_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -40,6 +42,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["activity_kind"]
           lead_id?: string
           occurred_at?: string
+          owner_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -69,6 +72,7 @@ export type Database = {
           next_step: string | null
           next_step_due: string | null
           notes: string | null
+          owner_id: string | null
           pay_range: string | null
           phone: string | null
           play: Database["public"]["Enums"]["play"]
@@ -99,6 +103,7 @@ export type Database = {
           next_step?: string | null
           next_step_due?: string | null
           notes?: string | null
+          owner_id?: string | null
           pay_range?: string | null
           phone?: string | null
           play?: Database["public"]["Enums"]["play"]
@@ -129,6 +134,7 @@ export type Database = {
           next_step?: string | null
           next_step_due?: string | null
           notes?: string | null
+          owner_id?: string | null
           pay_range?: string | null
           phone?: string | null
           play?: Database["public"]["Enums"]["play"]
@@ -151,6 +157,7 @@ export type Database = {
           created_at: string
           id: string
           lead_id: string
+          owner_id: string | null
           preview_text: string | null
           sent_at: string | null
           status: Database["public"]["Enums"]["draft_status"]
@@ -162,6 +169,7 @@ export type Database = {
           created_at?: string
           id?: string
           lead_id: string
+          owner_id?: string | null
           preview_text?: string | null
           sent_at?: string | null
           status?: Database["public"]["Enums"]["draft_status"]
@@ -173,6 +181,7 @@ export type Database = {
           created_at?: string
           id?: string
           lead_id?: string
+          owner_id?: string | null
           preview_text?: string | null
           sent_at?: string | null
           status?: Database["public"]["Enums"]["draft_status"]
@@ -189,15 +198,100 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       activity_kind: "Email Sent" | "Reply" | "Call" | "Meeting" | "Note"
+      app_role: "admin" | "subscriber"
       brand: "ZapAI" | "Newton Health"
       draft_status: "Draft" | "Approved" | "Sent" | "Bounced"
       lead_type: "Employer" | "Recruiter"
@@ -341,6 +435,7 @@ export const Constants = {
   public: {
     Enums: {
       activity_kind: ["Email Sent", "Reply", "Call", "Meeting", "Note"],
+      app_role: ["admin", "subscriber"],
       brand: ["ZapAI", "Newton Health"],
       draft_status: ["Draft", "Approved", "Sent", "Bounced"],
       lead_type: ["Employer", "Recruiter"],

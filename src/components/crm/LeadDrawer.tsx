@@ -122,7 +122,18 @@ export function LeadDrawer({
     <Sheet open={!!lead} onOpenChange={(o) => !o && onClose()}>
       <SheetContent className="w-full overflow-y-auto p-0 sm:max-w-xl">
         <SheetHeader className="sticky top-0 z-10 gap-1 border-b border-border bg-surface px-4 py-3">
-          <SheetTitle className="flex items-center gap-2 text-sm">
+          <div className="flex items-center justify-between gap-2 pr-8">
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 gap-1 text-xs"
+              onClick={onClose}
+              aria-label="Back to prospects"
+            >
+              ← Back to prospects
+            </Button>
+          </div>
+          <SheetTitle className="flex flex-wrap items-center gap-2 text-sm">
             {lead.company}
             <span className={brandClass(lead.brand)}>{lead.brand}</span>
             <span className={priorityClass(lead.priority)}>{lead.priority}</span>
@@ -286,6 +297,13 @@ export function LeadDrawer({
             </ul>
           </section>
 
+          <Button
+            variant="outline"
+            className="h-8 w-full text-xs"
+            onClick={onClose}
+          >
+            Close and return to prospects
+          </Button>
         </div>
       </SheetContent>
     </Sheet>

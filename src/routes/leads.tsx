@@ -9,7 +9,7 @@ const description =
 const OG_IMAGE =
   "https://claudepipe.cdmweb.store/__l5e/assets-v1/a14d14d1-ebd9-4993-b11e-e58fc625c4d2/claude-pipe-logo.jpg";
 
-export const Route = createFileRoute("/_authenticated/leads")({
+export const Route = createFileRoute("/leads")({
   head: () => ({
     meta: [
       { title },

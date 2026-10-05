@@ -30,7 +30,7 @@ export function link(href: string, text: string): string {
 type DraftSeedLead = {
   company: string;
   contact_name: string | null;
-  brand: "ZapAI" | "Newton Health";
+  brand: "ZapAI" | "Newton Health" | "KinematicOps";
   role_title: string | null;
   tech: string | null;
   city: string | null;

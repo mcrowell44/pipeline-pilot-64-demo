@@ -44,24 +44,23 @@ export function CrmShell({
         </nav>
       </header>
 
-      {        <>
-          <SummaryBar leads={leads} />
-          <main className="min-h-0 flex-1">
-            {leadsQuery.isLoading ? (
-              <p className="p-6 text-xs text-muted-foreground">Loading pipeline…</p>
-            ) : leadsQuery.error ? (
-              <p className="p-6 text-xs text-destructive">Failed to load leads.</p>
-            ) : (
-              children({ leads, drafts, open: (lead) => setOpenId(lead.id) })
-            )}
-          </main>
-          <LeadDrawer
-            lead={active}
-            draft={drafts.find((d) => d.lead_id === active?.id)}
-            onClose={() => setOpenId(null)}
-          />
-        </>
-      }
+      <>
+        <SummaryBar leads={leads} />
+        <main className="min-h-0 flex-1">
+          {leadsQuery.isLoading ? (
+            <p className="p-6 text-xs text-muted-foreground">Loading pipeline…</p>
+          ) : leadsQuery.error ? (
+            <p className="p-6 text-xs text-destructive">Failed to load leads.</p>
+          ) : (
+            children({ leads, drafts, open: (lead) => setOpenId(lead.id) })
+          )}
+        </main>
+        <LeadDrawer
+          lead={active}
+          draft={drafts.find((d) => d.lead_id === active?.id)}
+          onClose={() => setOpenId(null)}
+        />
+      </>
     </div>
   );
 }

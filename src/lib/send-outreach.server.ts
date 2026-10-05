@@ -14,7 +14,6 @@ export type SendResult = {
 
 export async function runSendOutreach(
   sb: Client,
-  ownerId: string,
   draftId: string,
 ): Promise<SendResult> {
   const { data: draft, error: draftError } = await sb
@@ -71,7 +70,6 @@ export async function runSendOutreach(
     await sb.from("lead_activity").insert({
       lead_id: lead.id,
       kind: "Email Sent",
-      owner_id: ownerId,
       occurred_at: now,
       body: `Sent "${draft.subject}" to ${lead.email} from ${FROM_ADDRESS}`,
     });
@@ -85,8 +83,7 @@ export async function runSendOutreach(
       await sb.from("lead_activity").insert({
         lead_id: lead.id,
         kind: "Note",
-        owner_id: ownerId,
-        body: `Send failed (marked Bounced): ${message}`,
+          body: `Send failed (marked Bounced): ${message}`,
       });
     }
     return { ok: false, error: message, ...(hard ? { status: "Bounced" as const } : {}) };

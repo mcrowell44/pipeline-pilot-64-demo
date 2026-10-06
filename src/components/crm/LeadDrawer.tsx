@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import {
   BRANDS,
+  JOB_TYPES,
   LEAD_TYPES,
   PLAYS,
   PRIORITIES,
@@ -43,6 +44,8 @@ const TEXT_FIELDS: Array<[keyof Lead, string]> = [
   ["geo", "Geo"],
   ["role_title", "Role title"],
   ["pay_range", "Pay range"],
+  ["pay_rate", "Pay rate"],
+  ["benefits", "Benefits"],
   ["scan_source", "Scan source"],
   ["next_step", "Next step"],
   ["ghl_contact_id", "GHL contact ID"],
@@ -50,6 +53,7 @@ const TEXT_FIELDS: Array<[keyof Lead, string]> = [
 
 const ENUM_FIELDS: Array<[keyof Lead, string, readonly string[]]> = [
   ["brand", "Brand", BRANDS],
+  ["job_type", "Job type", JOB_TYPES],
   ["play", "Play", PLAYS],
   ["priority", "Priority", PRIORITIES],
   ["lead_type", "Lead type", LEAD_TYPES],

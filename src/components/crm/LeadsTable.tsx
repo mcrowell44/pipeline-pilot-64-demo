@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import {
   BRANDS,
+  JOB_TYPES,
   PLAYS,
   PRIORITIES,
   STAGES,
@@ -23,7 +24,7 @@ import {
 import { useActivity, useUpdateLead, useUpdateLeads } from "@/hooks/useCrm";
 import { toast } from "sonner";
 
-type SortKey = "company" | "brand" | "play" | "priority" | "stage" | "geo" | "scan_date";
+type SortKey = "company" | "brand" | "play" | "priority" | "stage" | "geo" | "scan_date" | "job_type" | "pay_range" | "pay_rate" | "benefits";
 
 const ANY = "__any__";
 
@@ -35,7 +36,10 @@ const COLUMNS: Array<{ key: SortKey | null; label: string; className?: string }>
   { key: "priority", label: "Pri" },
   { key: "stage", label: "Stage" },
   { key: null, label: "Role" },
-  { key: null, label: "Pay" },
+  { key: "job_type", label: "Job type" },
+  { key: "pay_range", label: "Pay range" },
+  { key: "pay_rate", label: "Pay rate" },
+  { key: "benefits", label: "Benefits" },
   { key: "geo", label: "Geo" },
   { key: null, label: "Next step" },
   { key: null, label: "Due" },
@@ -48,6 +52,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
   const bulk = useUpdateLeads();
   const [q, setQ] = useState("");
   const [brand, setBrand] = useState(ANY);
+  const [jobType, setJobType] = useState(ANY);
   const [play, setPlay] = useState(ANY);
   const [priority, setPriority] = useState(ANY);
   const [stage, setStage] = useState(ANY);
@@ -61,6 +66,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
   const rows = useMemo(() => {
     const filtered = leads.filter((l) => {
       if (brand !== ANY && l.brand !== brand) return false;
+      if (jobType !== ANY && l.job_type !== jobType) return false;
       if (play !== ANY && l.play !== play) return false;
       if (priority !== ANY && l.priority !== priority) return false;
       if (stage !== ANY && l.stage !== stage) return false;
@@ -68,7 +74,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
       if (scanDate && l.scan_date !== scanDate) return false;
       if (attention && !needsAttention(l, activity ?? [])) return false;
       if (q) {
-        const hay = [l.company, l.contact_name, l.email, l.role_title, l.tech, l.city]
+        const hay = [l.company, l.contact_name, l.email, l.role_title, l.tech, l.city, l.job_type, l.pay_range, l.pay_rate, l.benefits]
           .join(" ")
           .toLowerCase();
         if (!hay.includes(q.toLowerCase())) return false;
@@ -80,7 +86,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
       const bv = (b[sort.key] ?? "") as string;
       return av.localeCompare(bv) * sort.dir;
     });
-  }, [leads, brand, play, priority, stage, geo, scanDate, q, sort, attention, activity]);
+  }, [leads, brand, jobType, play, priority, stage, geo, scanDate, q, sort, attention, activity]);
 
   const allSelected = rows.length > 0 && rows.every((r) => selected.includes(r.id));
 
@@ -110,6 +116,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
           className="h-7 w-56 text-xs"
         />
         <FilterSelect value={brand} onChange={setBrand} options={BRANDS} label="Brand" />
+        <FilterSelect value={jobType} onChange={setJobType} options={JOB_TYPES} label="Job type" />
         <FilterSelect value={play} onChange={setPlay} options={PLAYS} label="Play" />
         <FilterSelect value={priority} onChange={setPriority} options={PRIORITIES} label="Priority" />
         <FilterSelect value={stage} onChange={setStage} options={STAGES} label="Stage" />
@@ -169,7 +176,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
       )}
 
       <div className="flex-1 overflow-auto">
-        <table className="w-full border-collapse text-xs">
+        <table className="w-full min-w-[1600px] border-collapse text-xs">
           <thead className="sticky top-0 z-10 bg-surface-2">
             <tr className="border-b border-border">
               <th className="w-8 px-2 py-1.5">
@@ -181,12 +188,11 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
               {COLUMNS.map((col) => (
                 <th
                   key={col.label}
-                  onClick={() =>
-                    col.key &&
-                    setSort((s) =>
-                      s.key === col.key ? { key: s.key, dir: s.dir === 1 ? -1 : 1 } : { key: col.key!, dir: 1 },
-                    )
-                  }
+                  onClick={() => {
+                    const key = col.key;
+                    if (!key) return;
+                    setSort((s) => s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: 1 });
+                  }}
                   className={`whitespace-nowrap px-2 py-1.5 text-left text-[10px] font-semibold uppercase tracking-wide text-muted-foreground ${
                     col.key ? "cursor-pointer hover:text-foreground" : ""
                   }`}
@@ -243,7 +249,10 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
                   </select>
                 </td>
                 <EditableCell lead={lead} field="role_title" onSave={saveCell} />
+                <EditableCell lead={lead} field="job_type" onSave={saveCell} />
                 <EditableCell lead={lead} field="pay_range" onSave={saveCell} />
+                <EditableCell lead={lead} field="pay_rate" onSave={saveCell} />
+                <EditableCell lead={lead} field="benefits" onSave={saveCell} />
                 <EditableCell lead={lead} field="geo" onSave={saveCell} />
                 <EditableCell lead={lead} field="next_step" onSave={saveCell} />
                 <td className="whitespace-nowrap px-2 py-1">
@@ -269,7 +278,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={14} className="px-2 py-8 text-center text-muted-foreground">
+                <td colSpan={COLUMNS.length + 1} className="px-2 py-8 text-center text-muted-foreground">
                   No leads match these filters.
                 </td>
               </tr>
@@ -295,6 +304,7 @@ function EditableCell({
     <td className="px-2 py-1">
       <input
         className="cell-input"
+        aria-label={`${field.replaceAll("_", " ")} for ${lead.company}`}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={() => onSave(lead, field, value)}
@@ -317,7 +327,7 @@ function FilterSelect({
 }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="h-7 w-auto min-w-[104px] text-xs">
+      <SelectTrigger aria-label={`${label} filter`} className="h-7 w-auto min-w-[104px] text-xs">
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>

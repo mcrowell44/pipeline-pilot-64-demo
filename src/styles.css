@@ -37,6 +37,7 @@
   --color-ring: var(--ring);
   --color-zapai: var(--zapai);
   --color-newton: var(--newton);
+  --color-kinematic: var(--kinematic);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -77,6 +78,8 @@
   --zapai-soft: oklch(0.94 0.035 253);
   --newton: oklch(0.55 0.1 190);
   --newton-soft: oklch(0.94 0.035 192);
+  --kinematic: oklch(0.43 0.085 175);
+  --kinematic-soft: oklch(0.92 0.045 175);
   --pri-high: oklch(0.55 0.2 27);
   --pri-high-soft: oklch(0.945 0.04 27);
   --pri-medium: oklch(0.6 0.13 75);
@@ -120,6 +123,8 @@
   --ring: oklch(0.6 0.09 250);
   --zapai-soft: oklch(0.32 0.06 253);
   --newton-soft: oklch(0.32 0.05 192);
+  --kinematic: oklch(0.78 0.1 175);
+  --kinematic-soft: oklch(0.3 0.055 175);
   --pri-high-soft: oklch(0.33 0.07 27);
   --pri-medium-soft: oklch(0.33 0.06 80);
   --pri-low-soft: oklch(0.3 0.01 256);
@@ -143,6 +148,7 @@
 @layer components {
   .badge-zapai,
   .badge-newton,
+  .badge-kinematic,
   .chip-high,
   .chip-medium,
   .chip-low,
@@ -170,6 +176,11 @@
   .badge-newton {
     background: var(--newton-soft);
     color: var(--newton);
+  }
+
+  .badge-kinematic {
+    background: var(--kinematic-soft);
+    color: var(--kinematic);
   }
 
   .chip-high {

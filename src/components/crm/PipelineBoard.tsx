@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { STAGES, brandClass, priorityClass, type Lead, type Stage } from "@/lib/crm";
+import { BRANDS, STAGES, brandClass, priorityClass, type Lead, type Stage } from "@/lib/crm";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useUpdateLead } from "@/hooks/useCrm";
 import { toast } from "sonner";
 
@@ -11,6 +12,7 @@ export function PipelineBoard({
   onOpen: (lead: Lead) => void;
 }) {
   const update = useUpdateLead();
+  const [brand, setBrand] = useState("__all__");
   const [dragId, setDragId] = useState<string | null>(null);
   const [overStage, setOverStage] = useState<Stage | null>(null);
 
@@ -31,9 +33,19 @@ export function PipelineBoard({
   };
 
   return (
-    <div className="flex h-full gap-2 overflow-x-auto p-2">
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="flex items-center gap-2 border-b border-border bg-surface px-2 py-1.5">
+        <Select value={brand} onValueChange={setBrand}>
+          <SelectTrigger aria-label="Brand filter" className="h-7 w-auto min-w-[140px] text-xs"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__all__">Brand: any</SelectItem>
+            {BRANDS.map((b) => <SelectItem key={b} value={b}>{b} · {leads.filter((l) => l.brand === b).length}</SelectItem>)}
+          </SelectContent>
+        </Select>
+      </div>
+    <div className="flex min-h-0 flex-1 gap-2 overflow-x-auto p-2">
       {STAGES.map((stage) => {
-        const items = leads.filter((l) => l.stage === stage);
+        const items = leads.filter((l) => l.stage === stage && (brand === "__all__" || l.brand === brand));
         return (
           <div
             key={stage}
@@ -90,6 +102,7 @@ export function PipelineBoard({
           </div>
         );
       })}
+    </div>
     </div>
   );
 }

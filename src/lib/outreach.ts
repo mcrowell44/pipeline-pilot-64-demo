@@ -2,6 +2,7 @@
  * Canonical outreach building blocks.
  * These strings are the single source of truth — never inline or re-type them.
  */
+import type { Lead } from "@/lib/crm";
 
 export const SIGNATURE_BLOCK =
   '<p>Marcus Crowell<br>Crowell Digital Marketplace<br>AI Developer for <a href="https://zapai.io">zapai.io</a> and <a href="https://newtonhealth.ai">newtonhealth.ai</a><br>469-389-0208<br>Reply to <a href="mailto:marcus@zapai.io">marcus@zapai.io</a></p>';
@@ -27,15 +28,10 @@ export function link(href: string, text: string): string {
   return `<a href="${href}">${text}</a>`;
 }
 
-type DraftSeedLead = {
-  company: string;
-  contact_name: string | null;
-  brand: "ZapAI" | "Newton Health" | "KinematicOps";
-  role_title: string | null;
-  tech: string | null;
-  city: string | null;
-  state: string | null;
-};
+export type DraftSeedLead = Pick<Lead,
+  "company" | "contact_name" | "brand" | "role_title" | "tech" | "city" | "state" |
+  "job_type" | "pay_range" | "pay_rate" | "benefits"
+>;
 
 export function buildDraft(lead: DraftSeedLead): {
   subject: string;

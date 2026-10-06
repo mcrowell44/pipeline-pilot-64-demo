@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep brand and job-type options in `src/lib/crm.ts` and derive draft-generation lead fields from the generated Lead type; this prevents filters and draft inputs from drifting from the existing schema.

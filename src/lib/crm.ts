@@ -52,14 +52,18 @@ export const STAGES = [
 ] as const;
 export type Stage = (typeof STAGES)[number];
 
-export const BRANDS = ["ZapAI", "Newton Health"] as const;
+export const BRANDS = ["ZapAI", "Newton Health", "KinematicOps"] as const;
+export const JOB_TYPES = ["Contract", "W2", "Contract-to-hire", "1099"] as const;
 export const PLAYS = ["Apply", "Subcontract", "Both"] as const;
 export const PRIORITIES = ["High", "Medium", "Low"] as const;
 export const LEAD_TYPES = ["Employer", "Recruiter"] as const;
 export const DRAFT_STATUSES = ["Draft", "Approved", "Sent", "Bounced"] as const;
 
 export function brandClass(brand: string) {
-  return brand === "ZapAI" ? "badge-zapai" : "badge-newton";
+  if (brand === "ZapAI") return "badge-zapai";
+  if (brand === "Newton Health") return "badge-newton";
+  if (brand === "KinematicOps") return "badge-kinematic";
+  return "chip-low";
 }
 
 export function priorityClass(priority: string) {

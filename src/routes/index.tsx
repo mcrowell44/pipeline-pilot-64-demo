@@ -4,7 +4,7 @@ import { PipelineBoard } from "@/components/crm/PipelineBoard";
 
 const title = "Pipeline Board — Claude CRM";
 const description =
-  "Kanban lead pipeline for ZapAI and Newton Health contract and consulting sales.";
+  "Kanban lead pipeline for ZapAI, Newton Health and KinematicOps contract and consulting sales.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -13,6 +13,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: PipelinePage,

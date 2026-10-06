@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import {
   brandClass,
+  BRANDS,
   fmtDateTime,
   statusClass,
   DRAFT_STATUSES,
@@ -31,6 +33,7 @@ export function OutreachList({ drafts, leads }: { drafts: Draft[]; leads: Lead[]
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>(ALL);
+  const [brandFilter, setBrandFilter] = useState<string>(ALL);
   const [confirming, setConfirming] = useState<Draft | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,8 +41,10 @@ export function OutreachList({ drafts, leads }: { drafts: Draft[]; leads: Lead[]
   const missing = leads.filter((l) => !drafts.some((d) => d.lead_id === l.id)).length;
 
   const visible = useMemo(
-    () => (statusFilter === ALL ? drafts : drafts.filter((d) => d.status === statusFilter)),
-    [drafts, statusFilter],
+    () => drafts.filter((d) =>
+      (statusFilter === ALL || d.status === statusFilter) &&
+      (brandFilter === ALL || leads.find((l) => l.id === d.lead_id)?.brand === brandFilter)),
+    [drafts, leads, statusFilter, brandFilter],
   );
 
   const startEdit = (draft: Draft) => {
@@ -70,7 +75,7 @@ export function OutreachList({ drafts, leads }: { drafts: Draft[]; leads: Lead[]
     <TooltipProvider delayDuration={150}>
       <div className="flex h-full flex-col">
         <div className="flex flex-wrap items-center gap-2 border-b border-border bg-surface px-2 py-1.5">
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
             {[ALL, ...DRAFT_STATUSES].map((s) => (
               <button
                 key={s}
@@ -88,6 +93,13 @@ export function OutreachList({ drafts, leads }: { drafts: Draft[]; leads: Lead[]
               </button>
             ))}
           </div>
+          <Select value={brandFilter} onValueChange={setBrandFilter}>
+            <SelectTrigger aria-label="Brand filter" className="h-7 w-auto min-w-[140px] text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL}>Brand: any</SelectItem>
+              {BRANDS.map((brand) => <SelectItem key={brand} value={brand}>{brand} · {drafts.filter((d) => leads.find((l) => l.id === d.lead_id)?.brand === brand).length}</SelectItem>)}
+            </SelectContent>
+          </Select>
           <span className="text-[11px] text-muted-foreground">
             {missing} leads without a draft
           </span>

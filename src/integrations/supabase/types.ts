@@ -57,6 +57,7 @@ export type Database = {
       }
       leads: {
         Row: {
+          benefits: string | null
           brand: Database["public"]["Enums"]["brand"]
           city: string | null
           company: string
@@ -67,6 +68,7 @@ export type Database = {
           geo: string | null
           ghl_contact_id: string | null
           id: string
+          job_type: string | null
           last_touch_at: string | null
           lead_type: Database["public"]["Enums"]["lead_type"] | null
           next_step: string | null
@@ -74,6 +76,7 @@ export type Database = {
           notes: string | null
           owner_id: string | null
           pay_range: string | null
+          pay_rate: string | null
           phone: string | null
           play: Database["public"]["Enums"]["play"]
           priority: Database["public"]["Enums"]["priority"]
@@ -88,6 +91,7 @@ export type Database = {
           zip: string | null
         }
         Insert: {
+          benefits?: string | null
           brand?: Database["public"]["Enums"]["brand"]
           city?: string | null
           company: string
@@ -98,6 +102,7 @@ export type Database = {
           geo?: string | null
           ghl_contact_id?: string | null
           id?: string
+          job_type?: string | null
           last_touch_at?: string | null
           lead_type?: Database["public"]["Enums"]["lead_type"] | null
           next_step?: string | null
@@ -105,6 +110,7 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           pay_range?: string | null
+          pay_rate?: string | null
           phone?: string | null
           play?: Database["public"]["Enums"]["play"]
           priority?: Database["public"]["Enums"]["priority"]
@@ -119,6 +125,7 @@ export type Database = {
           zip?: string | null
         }
         Update: {
+          benefits?: string | null
           brand?: Database["public"]["Enums"]["brand"]
           city?: string | null
           company?: string
@@ -129,6 +136,7 @@ export type Database = {
           geo?: string | null
           ghl_contact_id?: string | null
           id?: string
+          job_type?: string | null
           last_touch_at?: string | null
           lead_type?: Database["public"]["Enums"]["lead_type"] | null
           next_step?: string | null
@@ -136,6 +144,7 @@ export type Database = {
           notes?: string | null
           owner_id?: string | null
           pay_range?: string | null
+          pay_rate?: string | null
           phone?: string | null
           play?: Database["public"]["Enums"]["play"]
           priority?: Database["public"]["Enums"]["priority"]

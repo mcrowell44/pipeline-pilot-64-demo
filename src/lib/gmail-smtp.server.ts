@@ -64,12 +64,13 @@ export async function sendGmail(input: {
     if (!waiter) return;
     const lines = buffer.split("\r\n");
     for (let i = 0; i < lines.length - 1; i++) {
-      if (/^\d{3} /.test(lines[i])) {
+      const line = lines[i] ?? "";
+      if (/^\d{3} /.test(line)) {
         const text = lines.slice(0, i + 1).join("\n");
         buffer = lines.slice(i + 1).join("\r\n");
         const w = waiter;
         waiter = null;
-        w({ code: Number(lines[i].slice(0, 3)), text });
+        w({ code: Number(line.slice(0, 3)), text });
         return;
       }
     }

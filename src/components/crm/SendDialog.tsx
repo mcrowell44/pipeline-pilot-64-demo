@@ -49,10 +49,14 @@ export function SendDialog({
                     Marcus Crowell &lt;marcus@cdmweb.store&gt;
                   </span>
                 </div>
+                <div>
+                  <span className="text-muted-foreground">Reply-To: </span>
+                  <span className="text-foreground">marcus@zapai.io</span>
+                </div>
               </div>
               <p className="text-muted-foreground">
-                Sends through GoHighLevel, marks the draft Sent, moves {lead?.company} to Contacted,
-                and logs an Email Sent activity. Replies land in your GHL inbox.
+                Sends through Gmail (marcus@cdmweb.store), marks the draft Sent, moves {lead?.company} to
+                Contacted, and logs an Email Sent activity. Replies land in that Gmail inbox.
               </p>
 
             </div>

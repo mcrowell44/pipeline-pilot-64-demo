@@ -329,7 +329,7 @@ export type Database = {
     Enums: {
       activity_kind: "Email Sent" | "Reply" | "Call" | "Meeting" | "Note"
       app_role: "admin" | "subscriber"
-      brand: "ZapAI" | "Newton Health" | "KinematicOps"
+      brand: "ZapAI" | "Newton Health" | "KinematicOps" | "Clutch"
       draft_status: "Draft" | "Approved" | "Sent" | "Bounced"
       lead_type: "Employer" | "Recruiter"
       play: "Apply" | "Subcontract" | "Both"
@@ -473,7 +473,7 @@ export const Constants = {
     Enums: {
       activity_kind: ["Email Sent", "Reply", "Call", "Meeting", "Note"],
       app_role: ["admin", "subscriber"],
-      brand: ["ZapAI", "Newton Health", "KinematicOps"],
+      brand: ["ZapAI", "Newton Health", "KinematicOps", "Clutch"],
       draft_status: ["Draft", "Approved", "Sent", "Bounced"],
       lead_type: ["Employer", "Recruiter"],
       play: ["Apply", "Subcontract", "Both"],

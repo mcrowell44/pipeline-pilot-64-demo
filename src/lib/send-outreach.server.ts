@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { FROM_ADDRESS, GhlError, sendEmail, upsertContact } from "./ghl.server";
+import { FROM_ADDRESS, SmtpError, sendGmail } from "./gmail-smtp.server";
 
 type Client = SupabaseClient<Database>;
 
@@ -39,18 +39,12 @@ export async function runSendOutreach(
   }
 
   try {
-    const contactId = await upsertContact({
-      email: lead.email,
-      name: lead.contact_name,
-      company: lead.company,
-      phone: lead.phone,
-    });
-
-    const { messageId, conversationId } = await sendEmail({
-      contactId,
+    const { messageId } = await sendGmail({
+      to: lead.email,
       subject: draft.subject,
       html: draft.body_html,
     });
+    const conversationId = null;
 
     const now = new Date().toISOString();
     await sb
@@ -58,14 +52,14 @@ export async function runSendOutreach(
       .update({
         status: "Sent",
         sent_at: now,
-        provider: "gohighlevel",
+        provider: "gmail",
         provider_message_id: messageId,
         from_address: FROM_ADDRESS,
       })
       .eq("id", draft.id);
     await sb
       .from("leads")
-      .update({ stage: "Contacted", last_touch_at: now, ghl_contact_id: contactId })
+      .update({ stage: "Contacted", last_touch_at: now })
       .eq("id", lead.id);
     await sb.from("lead_activity").insert({
       lead_id: lead.id,
@@ -77,7 +71,7 @@ export async function runSendOutreach(
     return { ok: true, messageId, conversationId, status: "Sent" };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    const hard = err instanceof GhlError && err.hard;
+    const hard = err instanceof SmtpError && err.hard;
     if (hard) {
       await sb.from("outreach_drafts").update({ status: "Bounced" }).eq("id", draft.id);
       await sb.from("lead_activity").insert({

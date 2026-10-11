@@ -134,7 +134,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
         />
         <button
           onClick={() => setAttention((a) => !a)}
-          title="Next step due today or earlier, or sitting in Contacted 7+ days with no reply"
+          title="Next step due today or earlier, or sitting in Email Sent 7+ days with no reply"
           className={`h-7 rounded border px-2 text-[11px] ${
             attention
               ? "border-transparent bg-destructive text-destructive-foreground"

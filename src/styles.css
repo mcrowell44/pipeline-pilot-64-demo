@@ -247,3 +247,7 @@
     text-decoration: underline;
   }
 }
+
+.stage-manual {
+  color: oklch(0.5 0.17 300);
+}

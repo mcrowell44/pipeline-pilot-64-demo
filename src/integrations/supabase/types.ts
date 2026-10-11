@@ -336,7 +336,8 @@ export type Database = {
       priority: "High" | "Medium" | "Low"
       stage:
         | "New"
-        | "Contacted"
+        | "Email Sent"
+        | "Manually Contacted"
         | "Replied"
         | "Discovery Booked"
         | "Meeting Held"
@@ -480,7 +481,8 @@ export const Constants = {
       priority: ["High", "Medium", "Low"],
       stage: [
         "New",
-        "Contacted",
+        "Email Sent",
+        "Manually Contacted",
         "Replied",
         "Discovery Booked",
         "Meeting Held",

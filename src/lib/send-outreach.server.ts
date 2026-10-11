@@ -59,7 +59,7 @@ export async function runSendOutreach(
       .eq("id", draft.id);
     await sb
       .from("leads")
-      .update({ stage: "Contacted", last_touch_at: now })
+      .update({ stage: "Email Sent", last_touch_at: now })
       .eq("id", lead.id);
     await sb.from("lead_activity").insert({
       lead_id: lead.id,

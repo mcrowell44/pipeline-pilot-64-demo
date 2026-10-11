@@ -56,7 +56,7 @@ export function SendDialog({
               </div>
               <p className="text-muted-foreground">
                 Sends through Gmail (marcus@cdmweb.store), marks the draft Sent, moves {lead?.company} to
-                Contacted, and logs an Email Sent activity. Replies land in that Gmail inbox.
+                Email Sent, and logs an Email Sent activity. Replies land in that Gmail inbox.
               </p>
 
             </div>

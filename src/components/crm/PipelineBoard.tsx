@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BRANDS, STAGES, brandClass, priorityClass, type Lead, type Stage } from "@/lib/crm";
+import { BRANDS, STAGES, brandClass, priorityClass, stageClass, type Lead, type Stage } from "@/lib/crm";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useUpdateLead } from "@/hooks/useCrm";
 import { toast } from "sonner";
@@ -60,7 +60,7 @@ export function PipelineBoard({
             }`}
           >
             <div className="flex items-center justify-between border-b border-border px-2 py-1.5">
-              <span className="text-[11px] font-semibold uppercase tracking-wide">{stage}</span>
+              <span className={`text-[11px] font-semibold uppercase tracking-wide ${stageClass(stage)}`}>{stage}</span>
               <span className="text-[11px] tabular-nums text-muted-foreground">{items.length}</span>
             </div>
             <div className="flex flex-1 flex-col gap-1.5 overflow-y-auto p-1.5">

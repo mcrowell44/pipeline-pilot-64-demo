@@ -1,0 +1,1 @@
+ALTER TYPE public.stage ADD VALUE IF NOT EXISTS 'Wrong Fit' AFTER 'Needs Contact Info';

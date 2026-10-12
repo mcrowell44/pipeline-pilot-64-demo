@@ -15,6 +15,13 @@
       "when": 1791698478471,
       "tag": "0001_rename_contacted_add_manually_contacted",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791778428327,
+      "tag": "0002_add_wrong_fit_stage",
+      "breakpoints": true
     }
   ]
 }

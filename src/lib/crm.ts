@@ -50,6 +50,7 @@ export const STAGES = [
   "Won",
   "Lost",
   "Needs Contact Info",
+  "Wrong Fit",
 ] as const;
 export type Stage = (typeof STAGES)[number];
 
@@ -95,5 +96,6 @@ export function fmtDate(value: string | null) {
 
 export function stageClass(stage: string) {
   if (stage === "Manually Contacted") return "stage-manual";
+  if (stage === "Wrong Fit") return "stage-wrongfit";
   return "";
 }

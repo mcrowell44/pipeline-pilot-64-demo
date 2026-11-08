@@ -1,13 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { sendOutreach } from "@/lib/outreach.functions";
 import type { Activity, ActivityKind, Draft, Lead, LeadUpdate } from "@/lib/crm";
 import { buildDraft, withCanonicalBlocks } from "@/lib/outreach";
+
+/**
+ * DEMO COPY: Reads initial snapshot from Supabase (if reachable) and keeps all
+ * mutations strictly in-memory inside the React Query cache so the main production
+ * database and real outreach channels are never modified by demo users.
+ */
 
 export function useLeads() {
   return useQuery({
     queryKey: ["leads"],
+    staleTime: Infinity,
     queryFn: async (): Promise<Lead[]> => {
       const { data, error } = await supabase
         .from("leads")
@@ -22,6 +27,7 @@ export function useLeads() {
 export function useDrafts() {
   return useQuery({
     queryKey: ["drafts"],
+    staleTime: Infinity,
     queryFn: async (): Promise<Draft[]> => {
       const { data, error } = await supabase
         .from("outreach_drafts")
@@ -37,10 +43,12 @@ export function useUpdateLead() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; patch: LeadUpdate }) => {
-      const { error } = await supabase.from("leads").update(patch).eq("id", id);
-      if (error) throw error;
+      qc.setQueryData<Lead[]>(["leads"], (old = []) =>
+        old.map((l) =>
+          l.id === id ? ({ ...l, ...patch, updated_at: new Date().toISOString() } as Lead) : l,
+        ),
+      );
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["leads"] }),
   });
 }
 
@@ -48,10 +56,13 @@ export function useUpdateLeads() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ ids, patch }: { ids: string[]; patch: LeadUpdate }) => {
-      const { error } = await supabase.from("leads").update(patch).in("id", ids);
-      if (error) throw error;
+      const idSet = new Set(ids);
+      qc.setQueryData<Lead[]>(["leads"], (old = []) =>
+        old.map((l) =>
+          idSet.has(l.id) ? ({ ...l, ...patch, updated_at: new Date().toISOString() } as Lead) : l,
+        ),
+      );
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["leads"] }),
   });
 }
 
@@ -67,14 +78,16 @@ export function useUpdateDraft() {
     }) => {
       const next = { ...patch };
       if (typeof next.body_html === "string") next.body_html = withCanonicalBlocks(next.body_html);
-      const { error } = await supabase.from("outreach_drafts").update(next).eq("id", id);
-      if (error) throw error;
+      qc.setQueryData<Draft[]>(["drafts"], (old = []) =>
+        old.map((d) =>
+          d.id === id ? ({ ...d, ...next, updated_at: new Date().toISOString() } as Draft) : d,
+        ),
+      );
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["drafts"] }),
   });
 }
 
-/** Creates a draft for every lead that doesn't have one yet. */
+/** Creates an in-memory demo draft for every lead that doesn't have one yet. */
 export function useGenerateMissingDrafts() {
   const qc = useQueryClient();
   return useMutation({
@@ -82,20 +95,29 @@ export function useGenerateMissingDrafts() {
       const covered = new Set(drafts.map((d) => d.lead_id));
       const targets = leads.filter((l) => !covered.has(l.id));
       if (targets.length === 0) return 0;
-      const { data: auth } = await supabase.auth.getUser();
-      const owner_id = auth.user?.id ?? null;
-      const rows = targets.map((lead) => ({ lead_id: lead.id, owner_id, ...buildDraft(lead) }));
-      const { error } = await supabase.from("outreach_drafts").insert(rows);
-      if (error) throw error;
+      const now = new Date().toISOString();
+      const rows: Draft[] = targets.map((lead, idx) => ({
+        id: `demo-draft-${Date.now()}-${idx}`,
+        lead_id: lead.id,
+        owner_id: null,
+        from_address: "marcus@cdmweb.store",
+        provider: "demo",
+        provider_message_id: null,
+        sent_at: null,
+        created_at: now,
+        updated_at: now,
+        ...buildDraft(lead),
+      }));
+      qc.setQueryData<Draft[]>(["drafts"], (old = []) => [...rows, ...old]);
       return rows.length;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["drafts"] }),
   });
 }
 
 export function useActivity() {
   return useQuery({
     queryKey: ["activity"],
+    staleTime: Infinity,
     queryFn: async (): Promise<Activity[]> => {
       const { data, error } = await supabase
         .from("lead_activity")
@@ -120,41 +142,53 @@ export function useLogActivity() {
       body: string;
     }) => {
       const occurred_at = new Date().toISOString();
-      const { data: auth } = await supabase.auth.getUser();
-      const { error } = await supabase
-        .from("lead_activity")
-        .insert({ lead_id, kind, body, occurred_at, owner_id: auth.user?.id ?? null });
-      if (error) throw error;
-      const { error: touchError } = await supabase
-        .from("leads")
-        .update({ last_touch_at: occurred_at })
-        .eq("id", lead_id);
-      if (touchError) throw touchError;
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["activity"] });
-      qc.invalidateQueries({ queryKey: ["leads"] });
+      const newActivity: Activity = {
+        id: `demo-act-${Date.now()}`,
+        lead_id,
+        kind,
+        body,
+        occurred_at,
+        owner_id: null,
+        created_at: occurred_at,
+        updated_at: occurred_at,
+      };
+      qc.setQueryData<Activity[]>(["activity"], (old = []) => [newActivity, ...old]);
+      qc.setQueryData<Lead[]>(["leads"], (old = []) =>
+        old.map((l) => (l.id === lead_id ? { ...l, last_touch_at: occurred_at } : l)),
+      );
     },
   });
 }
 
 /**
- * Sends a single draft. Only wired to the Send confirm dialog — never called on
- * mount, on a timer, or over a list.
+ * Simulates sending a draft in the Demo copy without dispatching real emails
+ * or mutating production records.
  */
 export function useSendOutreach() {
   const qc = useQueryClient();
-  const send = useServerFn(sendOutreach);
   return useMutation({
     mutationFn: async (draftId: string) => {
-      const result = await send({ data: { draftId } });
-      if (!result.ok) throw new Error(result.error ?? "Send failed.");
-      return result;
-    },
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ["drafts"] });
-      qc.invalidateQueries({ queryKey: ["leads"] });
-      qc.invalidateQueries({ queryKey: ["activity"] });
+      const now = new Date().toISOString();
+      let targetLeadId: string | null = null;
+      qc.setQueryData<Draft[]>(["drafts"], (old = []) =>
+        old.map((d) => {
+          if (d.id === draftId) {
+            targetLeadId = d.lead_id;
+            return { ...d, status: "Sent", sent_at: now, updated_at: now };
+          }
+          return d;
+        }),
+      );
+      if (targetLeadId) {
+        qc.setQueryData<Lead[]>(["leads"], (old = []) =>
+          old.map((l) =>
+            l.id === targetLeadId
+              ? { ...l, stage: "Email Sent", last_touch_at: now, updated_at: now }
+              : l,
+          ),
+        );
+      }
+      return { ok: true as const };
     },
   });
 }

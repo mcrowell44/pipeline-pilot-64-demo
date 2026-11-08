@@ -37,6 +37,9 @@ export function CrmShell({
           <span className="hidden text-[11px] font-medium tracking-wide text-primary sm:inline">
             crowell digitall marketpace - claude CRM · Daily Ops &amp; Recon
           </span>
+          <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary ring-1 ring-primary/40">
+            Demo Sandbox
+          </span>
         </div>
         <nav className="ml-2 flex items-center gap-1">
           {NAV.map((item) => (

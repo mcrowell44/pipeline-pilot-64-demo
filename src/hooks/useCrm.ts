@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Activity, ActivityKind, Draft, Lead, LeadUpdate } from "@/lib/crm";
+import { DEMO_ACTIVITY, DEMO_DRAFTS, DEMO_LEADS } from "@/lib/demo-seed";
 import { buildDraft, withCanonicalBlocks } from "@/lib/outreach";
 
 /**
- * DEMO COPY: Reads initial snapshot from Supabase (if reachable) and keeps all
- * mutations strictly in-memory inside the React Query cache so the main production
- * database and real outreach channels are never modified by demo users.
+ * DEMO COPY: Uses isolated in-memory demo records (falling back to DEMO_LEADS /
+ * DEMO_DRAFTS / DEMO_ACTIVITY if offline or empty) and keeps all mutations strictly
+ * inside the React Query cache so the main production database and real outreach
+ * channels are never modified by demo users.
  */
 
 export function useLeads() {
@@ -14,12 +16,16 @@ export function useLeads() {
     queryKey: ["leads"],
     staleTime: Infinity,
     queryFn: async (): Promise<Lead[]> => {
-      const { data, error } = await supabase
-        .from("leads")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
+      try {
+        const { data, error } = await supabase
+          .from("leads")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (!error && data && data.length > 0) return data;
+      } catch {
+        // Fall through to isolated demo seed data
+      }
+      return DEMO_LEADS;
     },
   });
 }
@@ -29,12 +35,16 @@ export function useDrafts() {
     queryKey: ["drafts"],
     staleTime: Infinity,
     queryFn: async (): Promise<Draft[]> => {
-      const { data, error } = await supabase
-        .from("outreach_drafts")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
+      try {
+        const { data, error } = await supabase
+          .from("outreach_drafts")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (!error && data && data.length > 0) return data;
+      } catch {
+        // Fall through to isolated demo seed data
+      }
+      return DEMO_DRAFTS;
     },
   });
 }
@@ -119,12 +129,16 @@ export function useActivity() {
     queryKey: ["activity"],
     staleTime: Infinity,
     queryFn: async (): Promise<Activity[]> => {
-      const { data, error } = await supabase
-        .from("lead_activity")
-        .select("*")
-        .order("occurred_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
+      try {
+        const { data, error } = await supabase
+          .from("lead_activity")
+          .select("*")
+          .order("occurred_at", { ascending: false });
+        if (!error && data && data.length > 0) return data;
+      } catch {
+        // Fall through to isolated demo seed data
+      }
+      return DEMO_ACTIVITY;
     },
   });
 }

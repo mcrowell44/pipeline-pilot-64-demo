@@ -2,7 +2,7 @@
 
 ## Overview
 
-**crowell digitall marketpace - claude CRM** (`https://claude.scraperscraper.com`) is a lead pipeline, employment/contract tracking, and outreach CRM supporting **ZapAI**, **Newton Health**, and **KinematicOps**.
+**crowell digitall marketpace - claude CRM** is a lead pipeline, employment/contract tracking, and outreach CRM supporting **ZapAI**, **Newton Health**, and **KinematicOps**.
 
 ### Key Routes
 

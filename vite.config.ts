@@ -15,12 +15,10 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "::",
       port: 8080,
-      allowedHosts: ["claude.scraperscraper.com", ".scraperscraper.com", "claudepipe.cdmweb.store"],
     },
     preview: {
       host: "::",
       port: 4173,
-      allowedHosts: ["claude.scraperscraper.com", ".scraperscraper.com", "claudepipe.cdmweb.store"],
     },
     resolve: {
       tsconfigPaths: true,

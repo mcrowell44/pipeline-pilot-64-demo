@@ -5,7 +5,7 @@ import { PipelineBoard } from "@/components/crm/PipelineBoard";
 const title = "Claude Pipe CRM — crowell digitall marketpace - claude CRM";
 const description =
   "Daily Ops and Recon for sales organizations — Kanban lead pipeline for ZapAI, Newton Health and KinematicOps.";
-const OG_IMAGE = "https://claude.scraperscraper.com/claude-pipe-cover.jpg";
+const OG_IMAGE = "/claude-pipe-cover.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,7 +15,6 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://claude.scraperscraper.com/" },
       { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: OG_IMAGE },

@@ -26,17 +26,28 @@ export function CrmShell({
 
   return (
     <div className="flex h-screen flex-col bg-background">
-      <header className="flex items-center gap-3 border-b border-border bg-surface px-3 py-2">
-        <img src="/favicon.png" alt="Claude Pipe" className="h-5 w-5 rounded-sm" />
-        <span className="text-sm font-semibold tracking-tight">Claude CRM</span>
-        <nav className="flex items-center gap-1">
+      <header className="header-claude-pipe flex items-center gap-3 px-3 py-2">
+        <img
+          src="/favicon.png"
+          alt="Claude Pipe CRM"
+          className="h-6 w-6 rounded-sm ring-1 ring-primary/40"
+        />
+        <div className="flex items-baseline gap-2">
+          <span className="text-sm font-semibold tracking-tight text-white">Claude Pipe CRM</span>
+          <span className="hidden text-[11px] font-medium tracking-wide text-primary sm:inline">
+            crowell digitall marketpace - claude CRM · Daily Ops &amp; Recon
+          </span>
+        </div>
+        <nav className="ml-2 flex items-center gap-1">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="rounded px-2 py-1 text-xs text-muted-foreground hover:bg-secondary"
+              className="rounded px-2.5 py-1 text-xs text-white/75 transition-colors hover:bg-white/10 hover:text-white"
               activeOptions={{ exact: true }}
-              activeProps={{ className: "bg-secondary text-foreground font-medium" }}
+              activeProps={{
+                className: "bg-primary text-primary-foreground font-semibold shadow-xs",
+              }}
             >
               {item.label}
             </Link>

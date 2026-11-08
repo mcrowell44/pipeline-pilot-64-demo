@@ -38,7 +38,6 @@ export function fmtDateTime(value: string | null) {
   return d.toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
 }
 
-
 export const STAGES = [
   "New",
   "Email Sent",

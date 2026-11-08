@@ -55,10 +55,10 @@ export function SendDialog({
                 </div>
               </div>
               <p className="text-muted-foreground">
-                Sends through Gmail (marcus@cdmweb.store), marks the draft Sent, moves {lead?.company} to
-                Email Sent, and logs an Email Sent activity. Replies land in that Gmail inbox.
+                Sends through Gmail (marcus@cdmweb.store), marks the draft Sent, moves{" "}
+                {lead?.company} to Email Sent, and logs an Email Sent activity. Replies land in that
+                Gmail inbox.
               </p>
-
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>

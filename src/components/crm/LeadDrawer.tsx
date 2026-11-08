@@ -82,7 +82,6 @@ export function LeadDrawer({
     setKind("Note");
   }, [lead]);
 
-
   if (!lead) return null;
 
   const set = (key: string, value: unknown) => setForm((f) => ({ ...f, [key]: value }));
@@ -121,7 +120,6 @@ export function LeadDrawer({
     .filter((a) => a.lead_id === lead.id)
     .sort((a, b) => b.occurred_at.localeCompare(a.occurred_at));
 
-
   return (
     <Sheet open={!!lead} onOpenChange={(o) => !o && onClose()}>
       <SheetContent className="w-full overflow-y-auto p-0 sm:max-w-xl">
@@ -143,7 +141,8 @@ export function LeadDrawer({
             <span className={priorityClass(lead.priority)}>{lead.priority}</span>
           </SheetTitle>
           <p className="text-[11px] text-muted-foreground">
-            {lead.stage} · last touch {fmtDate(lead.last_touch_at)} · scanned {fmtDate(lead.scan_date)}
+            {lead.stage} · last touch {fmtDate(lead.last_touch_at)} · scanned{" "}
+            {fmtDate(lead.scan_date)}
           </p>
         </SheetHeader>
 
@@ -193,7 +192,6 @@ export function LeadDrawer({
                 onChange={(e) => set("next_step_due", e.target.value)}
               />
             </label>
-
           </section>
 
           <section className="grid grid-cols-2 gap-2">
@@ -301,11 +299,7 @@ export function LeadDrawer({
             </ul>
           </section>
 
-          <Button
-            variant="outline"
-            className="h-8 w-full text-xs"
-            onClick={onClose}
-          >
+          <Button variant="outline" className="h-8 w-full text-xs" onClick={onClose}>
             Close and return to prospects
           </Button>
         </div>

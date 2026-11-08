@@ -2,9 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CrmShell } from "@/components/crm/CrmShell";
 import { PipelineBoard } from "@/components/crm/PipelineBoard";
 
-const title = "Pipeline Board — Claude CRM";
+const title = "Claude Pipe CRM — crowell digitall marketpace - claude CRM";
 const description =
-  "Kanban lead pipeline for ZapAI, Newton Health and KinematicOps contract and consulting sales.";
+  "Daily Ops and Recon for sales organizations — Kanban lead pipeline for ZapAI, Newton Health and KinematicOps.";
+const OG_IMAGE = "/claude-pipe-cover.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,7 +15,9 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
   }),
   component: PipelinePage,

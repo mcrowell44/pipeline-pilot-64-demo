@@ -11,7 +11,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -40,7 +39,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    console.error("[RootErrorBoundary]", error);
   }, [error]);
 
   return (
@@ -79,14 +78,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Claude CRM — Lead Pipeline" },
+      { title: "Claude Pipe CRM — crowell digitall marketpace - claude CRM" },
       {
         name: "description",
-        content: "Lead pipeline, outreach drafts and scan tracking for ZapAI and Newton Health.",
+        content:
+          "Daily Ops and Recon for sales organizations — Lead pipeline, outreach drafts and scan tracking for ZapAI, Newton Health and KinematicOps.",
       },
       { name: "author", content: "Marcus Crowell" },
+      {
+        property: "og:title",
+        content: "Claude Pipe CRM — crowell digitall marketpace - claude CRM",
+      },
+      {
+        property: "og:description",
+        content:
+          "Daily Ops and Recon for sales organizations — Lead pipeline, outreach drafts and scan tracking for ZapAI, Newton Health and KinematicOps.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/claude-pipe-cover.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/claude-pipe-cover.jpg" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

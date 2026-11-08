@@ -2,7 +2,7 @@ import { loadStripe, type Stripe } from "@stripe/stripe-js";
 
 type StripeEnv = "sandbox" | "live";
 
-const clientToken = import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'];
+const clientToken = import.meta.env["VITE_PAYMENTS_CLIENT_TOKEN"];
 
 export const PLAN_PRICE_ID = "claude_crm_monthly";
 export const PLAN_PRICE_LABEL = "$599 / month";

@@ -19,7 +19,8 @@ export function withCanonicalBlocks(bodyHtml: string): string {
 
 export function hasCanonicalBlocks(bodyHtml: string): boolean {
   return (
-    (bodyHtml ?? "").includes(SIGNATURE_BLOCK) && (bodyHtml ?? "").trimEnd().endsWith(CAN_SPAM_FOOTER)
+    (bodyHtml ?? "").includes(SIGNATURE_BLOCK) &&
+    (bodyHtml ?? "").trimEnd().endsWith(CAN_SPAM_FOOTER)
   );
 }
 
@@ -28,9 +29,19 @@ export function link(href: string, text: string): string {
   return `<a href="${href}">${text}</a>`;
 }
 
-export type DraftSeedLead = Pick<Lead,
-  "company" | "contact_name" | "brand" | "role_title" | "tech" | "city" | "state" |
-  "job_type" | "pay_range" | "pay_rate" | "benefits"
+export type DraftSeedLead = Pick<
+  Lead,
+  | "company"
+  | "contact_name"
+  | "brand"
+  | "role_title"
+  | "tech"
+  | "city"
+  | "state"
+  | "job_type"
+  | "pay_range"
+  | "pay_rate"
+  | "benefits"
 >;
 
 export function buildDraft(lead: DraftSeedLead): {

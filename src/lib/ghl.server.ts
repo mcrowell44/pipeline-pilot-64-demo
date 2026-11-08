@@ -57,7 +57,11 @@ async function ghlFetch(
     console.error(`GoHighLevel ${path} failed [${response.status}]: ${text}`);
     // 4xx other than rate limiting will never succeed on retry.
     const hard = response.status >= 400 && response.status < 500 && response.status !== 429;
-    throw new GhlError(`GoHighLevel rejected the request [${response.status}]: ${text}`, response.status, hard);
+    throw new GhlError(
+      `GoHighLevel rejected the request [${response.status}]: ${text}`,
+      response.status,
+      hard,
+    );
   }
 
   try {
@@ -84,7 +88,7 @@ export async function upsertContact(input: {
     ...(rest.length ? { lastName: rest.join(" ") } : {}),
     ...(input.company ? { companyName: input.company } : {}),
     ...(input.phone ? { phone: input.phone } : {}),
-    source: "Claude CRM",
+    source: "crowell digitall marketpace - claude CRM",
   };
 
   const data = await ghlFetch("/contacts/upsert", token, payload);

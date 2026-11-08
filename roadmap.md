@@ -1,4 +1,6 @@
 # UI updates
-- [x] Add KinematicOps styling, filters, and counts.
-- [x] Expose employment fields in the table, drawer, and draft-generation type.
-- [x] Verify desktop/mobile controls without changing stored records.
+
+- [x] Remove all Lovable mentions, telemetry, and configuration wrappers.
+- [x] Remove favicon, OG/Twitter social images, and header logo images.
+- [x] Update title and app name to "crowell digitall marketpace - claude CRM".
+- [x] Verify TypeScript check, production build (`dist/client` & `dist/server`), and live routes on `http://localhost:8080/`.

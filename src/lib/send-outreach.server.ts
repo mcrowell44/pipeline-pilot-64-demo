@@ -12,10 +12,7 @@ export type SendResult = {
   status?: "Sent" | "Bounced";
 };
 
-export async function runSendOutreach(
-  sb: Client,
-  draftId: string,
-): Promise<SendResult> {
+export async function runSendOutreach(sb: Client, draftId: string): Promise<SendResult> {
   const { data: draft, error: draftError } = await sb
     .from("outreach_drafts")
     .select("*")
@@ -57,10 +54,7 @@ export async function runSendOutreach(
         from_address: FROM_ADDRESS,
       })
       .eq("id", draft.id);
-    await sb
-      .from("leads")
-      .update({ stage: "Email Sent", last_touch_at: now })
-      .eq("id", lead.id);
+    await sb.from("leads").update({ stage: "Email Sent", last_touch_at: now }).eq("id", lead.id);
     await sb.from("lead_activity").insert({
       lead_id: lead.id,
       kind: "Email Sent",
@@ -77,7 +71,7 @@ export async function runSendOutreach(
       await sb.from("lead_activity").insert({
         lead_id: lead.id,
         kind: "Note",
-          body: `Send failed (marked Bounced): ${message}`,
+        body: `Send failed (marked Bounced): ${message}`,
       });
     }
     return { ok: false, error: message, ...(hard ? { status: "Bounced" as const } : {}) };

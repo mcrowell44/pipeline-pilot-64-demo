@@ -24,7 +24,18 @@ import {
 import { useActivity, useUpdateLead, useUpdateLeads } from "@/hooks/useCrm";
 import { toast } from "sonner";
 
-type SortKey = "company" | "brand" | "play" | "priority" | "stage" | "geo" | "scan_date" | "job_type" | "pay_range" | "pay_rate" | "benefits";
+type SortKey =
+  | "company"
+  | "brand"
+  | "play"
+  | "priority"
+  | "stage"
+  | "geo"
+  | "scan_date"
+  | "job_type"
+  | "pay_range"
+  | "pay_rate"
+  | "benefits";
 
 const ANY = "__any__";
 
@@ -74,7 +85,18 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
       if (scanDate && l.scan_date !== scanDate) return false;
       if (attention && !needsAttention(l, activity ?? [])) return false;
       if (q) {
-        const hay = [l.company, l.contact_name, l.email, l.role_title, l.tech, l.city, l.job_type, l.pay_range, l.pay_rate, l.benefits]
+        const hay = [
+          l.company,
+          l.contact_name,
+          l.email,
+          l.role_title,
+          l.tech,
+          l.city,
+          l.job_type,
+          l.pay_range,
+          l.pay_rate,
+          l.benefits,
+        ]
           .join(" ")
           .toLowerCase();
         if (!hay.includes(q.toLowerCase())) return false;
@@ -118,7 +140,12 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
         <FilterSelect value={brand} onChange={setBrand} options={BRANDS} label="Brand" />
         <FilterSelect value={jobType} onChange={setJobType} options={JOB_TYPES} label="Job type" />
         <FilterSelect value={play} onChange={setPlay} options={PLAYS} label="Play" />
-        <FilterSelect value={priority} onChange={setPriority} options={PRIORITIES} label="Priority" />
+        <FilterSelect
+          value={priority}
+          onChange={setPriority}
+          options={PRIORITIES}
+          label="Priority"
+        />
         <FilterSelect value={stage} onChange={setStage} options={STAGES} label="Stage" />
         <Input
           value={geo}
@@ -164,12 +191,7 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
             options={PRIORITIES}
             label="Set priority"
           />
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 text-xs"
-            onClick={() => setSelected([])}
-          >
+          <Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => setSelected([])}>
             Clear
           </Button>
         </div>
@@ -191,7 +213,9 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
                   onClick={() => {
                     const key = col.key;
                     if (!key) return;
-                    setSort((s) => s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: 1 });
+                    setSort((s) =>
+                      s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: 1 },
+                    );
                   }}
                   className={`whitespace-nowrap px-2 py-1.5 text-left text-[10px] font-semibold uppercase tracking-wide text-muted-foreground ${
                     col.key ? "cursor-pointer hover:text-foreground" : ""
@@ -237,7 +261,10 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
                     onChange={(e) =>
                       update.mutate({
                         id: lead.id,
-                        patch: { stage: e.target.value as Lead["stage"], last_touch_at: new Date().toISOString() },
+                        patch: {
+                          stage: e.target.value as Lead["stage"],
+                          last_touch_at: new Date().toISOString(),
+                        },
                       })
                     }
                   >
@@ -278,7 +305,10 @@ export function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (lead: Le
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={COLUMNS.length + 1} className="px-2 py-8 text-center text-muted-foreground">
+                <td
+                  colSpan={COLUMNS.length + 1}
+                  className="px-2 py-8 text-center text-muted-foreground"
+                >
                   No leads match these filters.
                 </td>
               </tr>

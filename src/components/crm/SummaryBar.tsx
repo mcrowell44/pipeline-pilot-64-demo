@@ -1,8 +1,14 @@
 import { BRANDS, STAGES, brandClass, type Lead } from "@/lib/crm";
 
 export function SummaryBar({ leads }: { leads: Lead[] }) {
-  const byStage = STAGES.map((s) => ({ stage: s, count: leads.filter((l) => l.stage === s).length }));
-  const byBrand = BRANDS.map((brand) => ({ brand, count: leads.filter((l) => l.brand === brand).length }));
+  const byStage = STAGES.map((s) => ({
+    stage: s,
+    count: leads.filter((l) => l.stage === s).length,
+  }));
+  const byBrand = BRANDS.map((brand) => ({
+    brand,
+    count: leads.filter((l) => l.brand === brand).length,
+  }));
   const latestScan = leads.reduce<string | null>(
     (acc, l) => (l.scan_date && (!acc || l.scan_date > acc) ? l.scan_date : acc),
     null,
@@ -21,7 +27,9 @@ export function SummaryBar({ leads }: { leads: Lead[] }) {
         <div className="uppercase tracking-wide text-muted-foreground">By brand</div>
         <div className="mt-0.5 flex flex-wrap gap-1">
           {byBrand.map(({ brand, count }) => (
-            <span key={brand} className={brandClass(brand)}>{brand === "Newton Health" ? "NH" : brand} {count}</span>
+            <span key={brand} className={brandClass(brand)}>
+              {brand === "Newton Health" ? "NH" : brand} {count}
+            </span>
           ))}
         </div>
       </div>

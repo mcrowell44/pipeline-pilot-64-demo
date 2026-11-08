@@ -15,7 +15,7 @@ function getSupabase() {
 }
 
 function priceIdOf(item: any) {
-  return item?.price?.lookup_key || item?.price?.metadata?.lovable_external_id || item?.price?.id;
+  return item?.price?.lookup_key || item?.price?.metadata?.external_id || item?.price?.id;
 }
 
 function iso(seconds: number | null | undefined) {

@@ -2,13 +2,14 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   brandClass,
   BRANDS,
@@ -41,9 +42,12 @@ export function OutreachList({ drafts, leads }: { drafts: Draft[]; leads: Lead[]
   const missing = leads.filter((l) => !drafts.some((d) => d.lead_id === l.id)).length;
 
   const visible = useMemo(
-    () => drafts.filter((d) =>
-      (statusFilter === ALL || d.status === statusFilter) &&
-      (brandFilter === ALL || leads.find((l) => l.id === d.lead_id)?.brand === brandFilter)),
+    () =>
+      drafts.filter(
+        (d) =>
+          (statusFilter === ALL || d.status === statusFilter) &&
+          (brandFilter === ALL || leads.find((l) => l.id === d.lead_id)?.brand === brandFilter),
+      ),
     [drafts, leads, statusFilter, brandFilter],
   );
 
@@ -94,15 +98,23 @@ export function OutreachList({ drafts, leads }: { drafts: Draft[]; leads: Lead[]
             ))}
           </div>
           <Select value={brandFilter} onValueChange={setBrandFilter}>
-            <SelectTrigger aria-label="Brand filter" className="h-7 w-auto min-w-[140px] text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger aria-label="Brand filter" className="h-7 w-auto min-w-[140px] text-xs">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>Brand: any</SelectItem>
-              {BRANDS.map((brand) => <SelectItem key={brand} value={brand}>{brand} · {drafts.filter((d) => leads.find((l) => l.id === d.lead_id)?.brand === brand).length}</SelectItem>)}
+              {BRANDS.map((brand) => (
+                <SelectItem key={brand} value={brand}>
+                  {brand} ·{" "}
+                  {
+                    drafts.filter((d) => leads.find((l) => l.id === d.lead_id)?.brand === brand)
+                      .length
+                  }
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
-          <span className="text-[11px] text-muted-foreground">
-            {missing} leads without a draft
-          </span>
+          <span className="text-[11px] text-muted-foreground">{missing} leads without a draft</span>
           <Button
             size="sm"
             className="ml-auto h-7 text-xs"

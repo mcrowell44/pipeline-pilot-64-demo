@@ -49,7 +49,11 @@ export async function sendGmail(input: {
   const user = process.env["GMAIL_SMTP_USER"];
   const pass = process.env["GMAIL_SMTP_APP_PASSWORD"];
   if (!user || !pass) {
-    throw new SmtpError("Gmail sending is not configured yet — add the SMTP username and app password.", 0, false);
+    throw new SmtpError(
+      "Gmail sending is not configured yet — add the SMTP username and app password.",
+      0,
+      false,
+    );
   }
   if (/[\r\n<>]/.test(input.to)) throw new SmtpError("Invalid recipient address.", 0, true);
 
@@ -94,7 +98,9 @@ export async function sendGmail(input: {
       }, TIMEOUT_MS);
       waiter = (r) => {
         clearTimeout(t);
-        r instanceof Error ? reject(new SmtpError(`Could not reach Gmail: ${r.message}`, 0, false)) : resolve(r);
+        r instanceof Error
+          ? reject(new SmtpError(`Could not reach Gmail: ${r.message}`, 0, false))
+          : resolve(r);
       };
       tryResolve();
     });
@@ -119,7 +125,10 @@ export async function sendGmail(input: {
     await step(`MAIL FROM:<${FROM_ADDRESS}>`, 250, "sender");
     await step(`RCPT TO:<${input.to}>`, 250, "recipient");
     await step("DATA", 354, "data");
-    const msg = buildMessage(input.to, input.subject, input.html, messageId).replace(/\r\n\./g, "\r\n..");
+    const msg = buildMessage(input.to, input.subject, input.html, messageId).replace(
+      /\r\n\./g,
+      "\r\n..",
+    );
     await step(`${msg}\r\n.`, 250, "delivery");
     socket.write("QUIT\r\n");
     return { messageId };

@@ -116,6 +116,7 @@ export function useGenerateMissingDrafts() {
         sent_at: null,
         created_at: now,
         updated_at: now,
+        status: "Draft" as const,
         ...buildDraft(lead),
       }));
       qc.setQueryData<Draft[]>(["drafts"], (old = []) => [...rows, ...old]);

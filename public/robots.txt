@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://claudepipe.cdmweb.store/sitemap.xml
+Sitemap: https://claude.scraperscraper.com/sitemap.xml

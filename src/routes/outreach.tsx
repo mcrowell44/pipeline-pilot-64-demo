@@ -5,7 +5,7 @@ import { OutreachList } from "@/components/crm/OutreachList";
 const title = "Outreach Drafts — Claude Pipe CRM (crowell digitall marketpace - claude CRM)";
 const description =
   "Review, edit, approve and manually send outreach drafts with a locked signature and CAN-SPAM footer.";
-const OG_IMAGE = "/claude-pipe-cover.jpg";
+const OG_IMAGE = "https://claude.scraperscraper.com/claude-pipe-cover.jpg";
 
 export const Route = createFileRoute("/outreach")({
   head: () => ({
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/outreach")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://claude.scraperscraper.com/outreach" },
       { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: OG_IMAGE },

@@ -95,11 +95,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Daily Ops and Recon for sales organizations — Lead pipeline, outreach drafts and scan tracking for ZapAI, Newton Health and KinematicOps.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "/claude-pipe-cover.jpg" },
+      { property: "og:url", content: "https://claude.scraperscraper.com" },
+      { property: "og:image", content: "https://claude.scraperscraper.com/claude-pipe-cover.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "/claude-pipe-cover.jpg" },
+      { name: "twitter:image", content: "https://claude.scraperscraper.com/claude-pipe-cover.jpg" },
     ],
     links: [
+      { rel: "canonical", href: "https://claude.scraperscraper.com" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

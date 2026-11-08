@@ -179,3 +179,4 @@ export const DEMO_ACTIVITY: Activity[] = [
     updated_at: NOW,
   },
 ];
+

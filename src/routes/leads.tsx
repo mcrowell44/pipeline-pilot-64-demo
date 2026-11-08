@@ -5,7 +5,7 @@ import { LeadsTable } from "@/components/crm/LeadsTable";
 const title = "Leads Table — Claude Pipe CRM (crowell digitall marketpace - claude CRM)";
 const description =
   "Filter, sort and edit ZapAI, Newton Health and KinematicOps leads, job types, pay and benefits in one dense table.";
-const OG_IMAGE = "/claude-pipe-cover.jpg";
+const OG_IMAGE = "https://claude.scraperscraper.com/claude-pipe-cover.jpg";
 
 export const Route = createFileRoute("/leads")({
   head: () => ({
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/leads")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://claude.scraperscraper.com/leads" },
       { property: "og:image", content: OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: OG_IMAGE },
